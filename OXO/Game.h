@@ -13,7 +13,7 @@ float g_WindowHeight{ 300 };
 
 #pragma region ownDeclarations
 // Declare your own global variables here
-const int cols{4};
+const int cols{3};
 const int rows{cols};
 Rectf g_Rect[cols][rows]{};
 enum class RectState
