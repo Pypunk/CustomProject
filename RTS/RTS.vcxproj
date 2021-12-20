@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{19f686de-78ed-4f00-a345-d632bd425a2b}</ProjectGuid>
-    <RootNamespace>EndlessRunner</RootNamespace>
+    <ProjectGuid>{6634a3d0-e7df-4418-9eaa-726590a9263e}</ProjectGuid>
+    <RootNamespace>RTS</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -160,15 +160,21 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SelectionRect.cpp" />
     <ClCompile Include="structs.cpp" />
+    <ClCompile Include="Unit.cpp" />
     <ClCompile Include="utils.cpp" />
+    <ClCompile Include="Villager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="SelectionRect.h" />
     <ClInclude Include="structs.h" />
+    <ClInclude Include="Unit.h" />
     <ClInclude Include="utils.h" />
+    <ClInclude Include="Villager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

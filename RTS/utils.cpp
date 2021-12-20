@@ -528,6 +528,10 @@ namespace utils
 	{
 		return Point2f{ (p1x + p2x) / 2, (p1y + p2y) / 2 };
 	}
+	Point2f GetMiddleOfRect(const Rectf& rect)
+	{
+		return Point2f{ rect.left + rect.width / 2,rect.bottom + rect.height / 2 };
+	}
 	bool IsPointInCircle(const Point2f& p, const Circlef& c)
 	{
 		return (p.x >= c.center.x - c.radius && p.x <= c.center.x + c.radius
@@ -552,7 +556,7 @@ namespace utils
 
 		return true;
 	}
-	bool IsOverLapping(const Circlef& c1, const Circlef& c2)
+	bool IsOverlapping(const Circlef& c1, const Circlef& c2)
 	{
 		const float distance{ GetDistance(c1.center,c2.center)*GetDistance(c1.center,c2.center) };
 		const float radSquared{ powf((c1.radius + c2.radius),2) };
@@ -584,7 +588,167 @@ namespace utils
 		const float y = offset.y + (radius * sinf(radians));
 		return Point2f{ x, y };
 	}
+	int GetIndex(int rowIdx, int colIdx, int nrCols)
+	{
+		return rowIdx * nrCols + colIdx;
+	}
+	void CreateGrid(Rectf* pgrid, int cols, int rows, float cellSize)
+	{
+		Point2f position{ 10,10 };
+		for (int i{}; i < rows; ++i)
+		{
+			for (int j{}; j < cols; ++j)
+			{
+				pgrid[GetIndex(i, j, cols)] = Rectf{ position.x,position.y,cellSize,cellSize };
+				position.x += cellSize;
+			}
+			position.x = 10;
+			position.y += cellSize;
+		}
+	}
 #pragma endregion OwnFunctions
+
+#pragma region drawFunctions
+	void DrawSquares(Point2f& position, float squareSize, float amount)
+	{
+		float newSize{};
+		for (int i{}; i < amount; ++i)
+		{
+			SetColor(0, 0, 0);
+			Rectf rect{ position.x,position.y,newSize,newSize };
+			DrawRect(rect);
+			position.x += squareSize / amount / 2;
+			position.y += squareSize / amount / 2;
+			newSize -= squareSize / amount;
+		}
+	}
+	void DrawEguilateralTriangle(const Point2f& position, float size, bool isFilled)
+	{
+		const float angle{ 60.f };
+		const Point2f position2{ CreateCoordinatesFromRads(size, ConvertToRadians(angle), position) };
+		const Point2f position3{ position.x + size,position.y };
+		if (isFilled)
+		{
+			FillTriangle(position, position2, position3);
+		}
+		else
+		{
+			DrawTriangle(position, position2, position3);
+		}
+	}
+	void DrawPentagram(const Point2f& center, float radius)
+	{
+		const int pentaPointsAmount{ 5 };
+		const float angle{ g_Pi / pentaPointsAmount };
+		Point2f pentaPoints[pentaPointsAmount]{};
+		for (int i{}; i < pentaPointsAmount; ++i)
+		{
+			switch (i)
+			{
+			case 0:
+				pentaPoints[i] = Point2f{ cosf(2 * angle) * radius + center.x,sinf(2 * angle) * radius + center.y };
+				break;
+			case 1:
+				pentaPoints[i] = Point2f{ cosf(2 * angle * 3) * radius + center.x,sinf(2 * angle * 3) * radius + center.y };
+				break;
+			case 2:
+				pentaPoints[i] = Point2f{ cosf(2 * angle * 5) * radius + center.x,sinf(2 * angle * 5) * radius + center.y };
+				break;
+			case 3:
+				pentaPoints[i] = Point2f{ cosf(2 * angle * 2) * radius + center.x,sinf(2 * angle * 2) * radius + center.y };
+				break;
+			case 4:
+				pentaPoints[i] = Point2f{ cosf(2 * angle * 4) * radius + center.x,sinf(2 * angle * 4) * radius + center.y };
+				break;
+			}
+		}
+		DrawPolygon(pentaPoints,pentaPointsAmount);
+	}
+	void DrawRotatingPentagram(const Point2f& center, float radius, AngleSpeed pAngleSpeed)
+	{
+		const int pentaPointsAmount{ 5 };
+		const float angle{ g_Pi/pentaPointsAmount + ConvertToRadians(pAngleSpeed.angle) };
+		Point2f pentaPoints[pentaPointsAmount]{};
+		for (int i{ 0 }; i < 5; ++i)
+		{
+			switch (i)
+			{
+			case 0:
+				pentaPoints[i] = Point2f{ cosf(2 * angle) * radius + center.x,sinf(2 * angle) * radius + center.y };
+				break;
+			case 1:
+				pentaPoints[i] = Point2f{ cosf(2 * angle * 3) * radius + center.x,sinf(2 * angle * 3) * radius + center.y };
+				break;
+			case 2:
+				pentaPoints[i] = Point2f{ cosf(2 * angle * 5) * radius + center.x,sinf(2 * angle * 5) * radius + center.y };
+				break;
+			case 3:
+				pentaPoints[i] = Point2f{ cosf(2 * angle * 2) * radius + center.x,sinf(2 * angle * 2) * radius + center.y };
+				break;
+			case 4:
+				pentaPoints[i] = Point2f{ cosf(2 * angle * 4) * radius + center.x,sinf(2 * angle * 4) * radius + center.y };
+				break;
+			}
+		}
+		DrawPolygon(pentaPoints, 5);
+	}
+	void DrawRadiantRect(Point2f& position, float width, float height, Color4f& startColor, const Color4f& endColor)
+	{
+		const float gradientIncrement{ 1.f / width };
+		for (int i{}; i < width; ++i)
+		{
+			SetColor(startColor);
+			DrawLine(position, Point2f{ position.x,position.y + height });
+			if (startColor.r < endColor.r)
+			{
+				startColor.r += gradientIncrement;
+			}
+			else
+			{
+				startColor.r -= gradientIncrement;
+			}
+			if (startColor.g < endColor.g)
+			{
+				startColor.g += gradientIncrement;
+			}
+			else
+			{
+				startColor.g -= gradientIncrement;
+			}
+			if (startColor.b < endColor.b)
+			{
+				startColor.b += gradientIncrement;
+			}
+			else
+			{
+				startColor.b -= gradientIncrement;;
+			}
+			if (startColor.a < endColor.a)
+			{
+				startColor.a += gradientIncrement;
+			}
+			else
+			{
+				startColor.a -= gradientIncrement;
+			}
+			position.x++;
+		}
+	}
+	void DrawDotGrid(Point2f& position, float radius, float offSet, float cols, float rows)
+	{
+		float startYpos{ position.y };
+		for (int i{}; i < cols; ++i)
+		{
+			for (int j{}; j < rows; ++j)
+			{
+				FillEllipse(position, radius, radius);
+				position.y += radius * 2 + offSet;
+			}
+			position.y = startYpos;
+			position.x += radius * 2 + offSet;
+		}
+	}
+#pragma endregion drawFunctions
 
 #pragma region VectorMath
 	void DrawVector(const Vector2f& vector, const Point2f& startPos)
@@ -655,10 +819,6 @@ namespace utils
 		Vector2f normal{ Normalize(v) };
 		float dotProduct{ Dot(newVector, normal)} ;
 		return Scale(normal, dotProduct);
-	}
-	Vector2f SetNullvector()
-	{
-		return Vector2f(0, 0);
 	}
 #pragma endregion VectorMath
 }

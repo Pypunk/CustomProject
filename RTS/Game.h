@@ -1,5 +1,7 @@
 #pragma once
 using namespace utils;
+class Villager;
+class SelectionRect;
 #pragma region gameInformation
 // Set your name and group in the title here
 std::string g_WindowTitle{ "Project name - Name, firstname - 1DAExx" };
@@ -13,27 +15,21 @@ float g_WindowHeight{ 300 };
 
 #pragma region ownDeclarations
 // Declare your own global variables here
-const float g_Gravity{ -9.81f };
-float g_Speed{};
-float g_HealthAmount{ 5 };
-Vector2f g_Velocity{};
-Rectf g_Character{};
-Rectf g_Obstacles[3]{};
-const float g_JumpVelocity{ 500.f };
-Color4f g_Color{};
-enum class jumpState
-{
-	jumping,
-	onground,
-};
-bool isHit{ false };
-jumpState g_CurrentState{ jumpState::onground };
+const int g_VillagerAmount{ 10 };
+Villager* g_pUnit[g_VillagerAmount]{ nullptr };
+Point2f g_MousePos{};
+int g_SelectedIndex[g_VillagerAmount];
+int g_AmountSelected{};
+SelectionRect* g_pSelectionRect;
 // Declare your own functions here
-void UpdateCharacter(float elapsedSec);
-void CheckJumpState(float elapsedSec);
-void DrawHealth();
-void InitializeObstacles();
-void UpdateObstacles(float elapsedSec);
+void CreateUnits();
+void CreateSelectionRect();
+void SelectUnits();
+void CheckAmountSelected();
+void MoveUnits(int amount);
+void SetSelectedIndexes(std::vector<int>& indexes);
+void SetColsAndRows(int amount, int& cols, int& rows, std::vector<int>& indexes);
+void SetMovePositions(int amount, int& cols, int& rows, std::vector<Point2f>& movePositions, std::vector<int>& indexes);
 #pragma endregion ownDeclarations
 
 #pragma region gameFunctions											

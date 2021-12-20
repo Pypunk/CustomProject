@@ -78,10 +78,11 @@ namespace utils
 	float GetDistance(float p1x, float p1y, float p2x, float p2y);
 	Point2f GetMiddle(const Point2f& pointA, const Point2f& pointB);
 	Point2f GetMiddle(float p1x, float p1y, float p2x, float p2y);
+	Point2f GetMiddleOfRect(const Rectf& rect);
 	bool IsPointInCircle(const Point2f& p, const Circlef& c);
 	bool IsPointInRect(const Point2f& p, const Rectf& r);
 	bool IsOverlapping(const Rectf& r1, const Rectf& r2);
-	bool IsOverLapping(const Circlef& c1, const Circlef& c2);
+	bool IsOverlapping(const Circlef& c1, const Circlef& c2);
 #pragma endregion CollisionFunctionality
 
 #pragma region OwnFunctions
@@ -90,7 +91,18 @@ namespace utils
 	float ConvertToRadians(float degrees);
 	float ConvertToDegrees(float radians);
 	Point2f CreateCoordinatesFromRads(float radius, float radians, const Point2f& offset = {});
+	int GetIndex(int rowIdx, int colIdx, int nrCols);
+	void CreateGrid(Rectf* pgrid, int cols, int rows, float cellSize);
 #pragma endregion OwnFunctions
+
+#pragma region drawFunctions
+	void DrawSquares(Point2f& position, float squareSize, float amount);
+	void DrawEguilateralTriangle(const Point2f& position, float size, bool isFilled = true);
+	void DrawPentagram(const Point2f& center, float radius);
+	void DrawRotatingPentagram(const Point2f& center, float radius, AngleSpeed pAngleSpeed);
+	void DrawRadiantRect(Point2f& position, float width, float height, Color4f& startColor, const Color4f& endColor);
+	void DrawDotGrid(Point2f& position, float radius, float offSet, float cols, float rows);
+#pragma endregion drawFunctions
 
 #pragma region VectorMath
 	void DrawVector(const Vector2f& vector, const Point2f& startPos = {});
@@ -105,6 +117,5 @@ namespace utils
 	float AngleBetween(const Vector2f& v1, const Vector2f& v2);
 	bool AreEqual(const Vector2f& v1, const Vector2f& v2);
 	Vector2f CalculateProjection(const Vector2f& v, Vector2f& v2, float angle);
-	Vector2f SetNullvector();
 #pragma endregion VectorMath
 }

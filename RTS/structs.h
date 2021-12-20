@@ -78,3 +78,8 @@ struct Vector2f
 	float y;
 };
 
+struct AngleSpeed
+{
+	float angle;
+	float speed;
+};
