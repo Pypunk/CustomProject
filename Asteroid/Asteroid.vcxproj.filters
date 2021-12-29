@@ -42,6 +42,9 @@
     <ClCompile Include="asteroid.cpp">
       <Filter>Game Files</Filter>
     </ClCompile>
+    <ClCompile Include="Health.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -66,6 +69,9 @@
       <Filter>Game Files</Filter>
     </ClInclude>
     <ClInclude Include="asteroid.h">
+      <Filter>Game Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Health.h">
       <Filter>Game Files</Filter>
     </ClInclude>
   </ItemGroup>

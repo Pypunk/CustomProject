@@ -3,40 +3,76 @@
 #include <iostream>
 #include "Spaceship.h"
 #include "asteroid.h"
+#include <vector>
 //Basic game functions
 #pragma region gameFunctions											
 void Start()
 {
 	CreateSpaceship();
 	CreateAsteroids();
+	TextureFromString("Game Over!", "Resources/DIN-Light.otf", 80, Color4f{1,1,1,1}, g_GameOverText);
+	TextureFromString("Press R to restart!", "Resources/DIN-Light.otf", 40, Color4f{ 1,1,1,1 }, g_RToRestartText);
 }
 
 void Draw()
 {
 	const Color4f backgroundColor{ 0,0,0,1 };
 	ClearBackground(backgroundColor.r, backgroundColor.g, backgroundColor.b);
-	g_pSpaceship->Draw();
+	g_pSpaceship->Draw(g_WindowWidth,g_WindowHeight);
 	for (int i{}; i < g_AsteroidAmount; ++i)
 	{
 		g_pAsteroids[i]->Draw();
+	}
+	if (g_pSpaceship->IsDead())
+	{
+		const Rectf gameOverTextPos{ g_WindowWidth / 2 - g_GameOverText.width / 2,g_WindowHeight / 2 - g_GameOverText.height / 2+g_RToRestartText.height,g_GameOverText.width,g_GameOverText.height };
+		DrawTexture(g_GameOverText, gameOverTextPos);
+		const Rectf rToRestartTextPos{ g_WindowWidth / 2 - g_RToRestartText.width / 2,g_WindowHeight / 2 - g_RToRestartText.height / 2-g_RToRestartText.height,g_RToRestartText.width,g_RToRestartText.height };
+		DrawTexture(g_RToRestartText, rToRestartTextPos);
 	}
 }
 
 void Update(float elapsedSec)
 {
-	UpdateSpaceship(elapsedSec);
-	UpdateAsteroids(elapsedSec);
+	if (!g_pSpaceship->IsDead())
+	{
+		UpdateSpaceship(elapsedSec);
+		UpdateAsteroids(elapsedSec);
 
-	// e.g. Check keyboard state
-	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
-	//if ( pStates[SDL_SCANCODE_RIGHT] )
-	//{
-	//	std::cout << "Right arrow key is down\n";
-	//}
-	//if ( pStates[SDL_SCANCODE_LEFT] && pStates[SDL_SCANCODE_UP])
-	//{
-	//	std::cout << "Left and up arrow keys are down\n";
-	//}
+		// e.g. Check keyboard state
+		const Uint8* pStates = SDL_GetKeyboardState(nullptr);
+		if (pStates[SDL_SCANCODE_RIGHT])
+		{
+			g_pSpaceship->SetHorVelocity(g_HorSpeed);
+			g_isPressed = true;
+		}
+		if (pStates[SDL_SCANCODE_LEFT])
+		{
+			g_pSpaceship->SetHorVelocity(-g_HorSpeed);
+			g_isPressed = true;
+		}
+		if (pStates[SDL_SCANCODE_DOWN])
+		{
+			g_pSpaceship->SetVertVelocity(-g_VertSpeed);
+			g_isPressed = true;
+		}
+		if (pStates[SDL_SCANCODE_UP])
+		{
+			g_pSpaceship->SetVertVelocity(g_VertSpeed);
+			g_isPressed = true;
+		}
+		m_Time += elapsedSec;
+		Point2f asteroidPosition{};
+		if (10 < m_Time)
+		{
+			m_Time = 0;
+			asteroidPosition.x = float(rand() % int(g_WindowWidth));
+			asteroidPosition.y = float(rand() % int(g_WindowHeight));
+			g_pAsteroids.push_back(new Asteroid{ asteroidPosition,g_AsteroidSize,g_pSpaceship });
+			g_AsteroidAmount++;
+			std::cout << g_AsteroidAmount << " are now in game\n";
+		}
+	}
 }
 
 void End()
@@ -48,6 +84,9 @@ void End()
 		delete g_pAsteroids[i];
 		g_pAsteroids[i] = nullptr;
 	}
+	g_pAsteroids.clear();
+	DeleteTexture(g_GameOverText);
+	DeleteTexture(g_RToRestartText);
 }
 #pragma endregion gameFunctions
 
@@ -55,29 +94,6 @@ void End()
 #pragma region inputHandling											
 void OnKeyDownEvent(SDL_Keycode key)
 {
-	switch (key)
-	{
-	case SDLK_UP:
-	case SDLK_w:
-		g_pSpaceship->SetVertVelocity(g_VertSpeed);
-		g_isPressed = true;
-		break;
-	case SDLK_DOWN:
-	case SDLK_s:
-		g_pSpaceship->SetVertVelocity(-g_VertSpeed);
-		g_isPressed = true;
-		break;
-	case SDLK_LEFT:
-	case SDLK_a:
-		g_pSpaceship->SetHorVelocity(-g_HorSpeed);
-		g_isPressed = true;
-		break;
-	case SDLK_RIGHT:
-	case SDLK_d:
-		g_pSpaceship->SetHorVelocity(g_HorSpeed);
-		g_isPressed = true;
-		break;
-	}
 }
 
 void OnKeyUpEvent(SDL_Keycode key)
@@ -93,6 +109,22 @@ void OnKeyUpEvent(SDL_Keycode key)
 	case SDLK_RIGHT:
 	case SDLK_d:
 		g_isPressed = false;
+		break;
+	case SDLK_r:
+		if (g_pSpaceship->IsDead())
+		{
+			delete g_pSpaceship;
+			g_pSpaceship = nullptr;
+			for (int i{}; i < g_AsteroidAmount; ++i)
+			{
+				delete g_pAsteroids[i];
+				g_pAsteroids[i] = nullptr;
+			}
+			g_pAsteroids.clear();
+			g_AsteroidAmount = 5;
+		}
+		CreateSpaceship();
+		CreateAsteroids();
 		break;
 	}
 }
@@ -136,7 +168,7 @@ void CreateAsteroids()
 	{
 		asteroidPosition.x = float(rand() % int(g_WindowWidth));
 		asteroidPosition.y = float(rand() % int(g_WindowHeight));
-		g_pAsteroids[i] = new Asteroid{ asteroidPosition,g_AsteroidSize,g_pSpaceship };
+		g_pAsteroids.push_back(new Asteroid{ asteroidPosition,g_AsteroidSize,g_pSpaceship });
 	}
 }
 void UpdateSpaceship(float elapsedSec)
@@ -174,6 +206,7 @@ void UpdateSpaceshipVelocityY(float step)
 void UpdateAsteroids(float elapsedSec)
 {
 	UpdateAsteroidCollisions(elapsedSec);
+	bool invincible{ g_pSpaceship->GetInvincible() };
 	for (int i{}; i < g_AsteroidAmount; ++i)
 	{
 		const float randHeight{ float(rand() % int(g_WindowHeight)) };
@@ -189,9 +222,10 @@ void UpdateAsteroidCollisions(float elapsedSec)
 		const float randHeight{ float(rand() % int(g_WindowHeight)) };
 		const float randWidth{ float(rand() % int(g_WindowWidth)) };
 		g_pAsteroids[i]->Update(elapsedSec);
-		if (g_pSpaceship->IsHit(g_pAsteroids[i]->GetShape()) 
-			|| g_pSpaceship->IsRocketHit(g_pAsteroids[i]->GetShape()))
+		if ((g_pSpaceship->IsHit(g_pAsteroids[i]->GetShape()) && !g_pSpaceship->GetInvincible()) 
+			|| (g_pSpaceship->IsRocketHit(g_pAsteroids[i]->GetShape()) && !g_pSpaceship->GetInvincible()))
 		{
+			g_pSpaceship->SetZeroVelocity();
 			delete g_pAsteroids[i];
 			g_pAsteroids[i] = nullptr;
 			g_pAsteroids[i] = new Asteroid{ Point2f{randWidth,randHeight},g_AsteroidSize,g_pSpaceship };

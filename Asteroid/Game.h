@@ -15,13 +15,16 @@ float g_WindowHeight{ 300 };
 
 #pragma region ownDeclarations
 // Declare your own global variables here
-const float g_HorSpeed{ 100.f };
-const float g_VertSpeed{ 100.f };
-const int g_AsteroidAmount{ 5 };
+const float g_HorSpeed{ 10.f };
+const float g_VertSpeed{ 10.f };
+int g_AsteroidAmount{ 5 };
 const float g_AsteroidSize{ 15.f };
+float m_Time{ 0 };
 bool g_isPressed{ false };
 Spaceship* g_pSpaceship{ nullptr };
-Asteroid* g_pAsteroids[g_AsteroidAmount]{ nullptr };
+std::vector<Asteroid*>g_pAsteroids;
+Texture g_GameOverText;
+Texture g_RToRestartText;
 // Declare your own functions here
 void CreateSpaceship();
 void CreateAsteroids();
