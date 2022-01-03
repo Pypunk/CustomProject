@@ -15,7 +15,7 @@ private:
 	Texture m_Texture;
 	Vector2f m_Velocity;
 
-	void SetRandXVelocity(int maxSpeed, Spaceship* ship);
-	void SetRandYVelocity(int maxSpeed, Spaceship* ship);
+	float SetRandXVelocity(int maxSpeed, Spaceship* ship);
+	float SetRandYVelocity(int maxSpeed, Spaceship* ship);
 };
 

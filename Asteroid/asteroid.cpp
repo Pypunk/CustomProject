@@ -10,8 +10,8 @@ Asteroid::Asteroid(const Point2f& position, float radius, Spaceship* ship)
 {
 	const int maxSpeed{ 200 };
 	TextureFromFile("Resources/Asteroid.png", m_Texture);
-	SetRandXVelocity(maxSpeed, ship);
-	SetRandYVelocity(maxSpeed, ship);
+	m_Velocity.x = SetRandXVelocity(maxSpeed, ship);
+	m_Velocity.y = SetRandYVelocity(maxSpeed, ship);
 }
 
 Asteroid::~Asteroid()
@@ -25,7 +25,7 @@ void Asteroid::Draw()
 	Rectf textureRect{};
 	textureRect.bottom = m_Shape.center.y - m_Shape.radius-radiusOffSet/2.f;
 	textureRect.left = m_Shape.center.x - m_Shape.radius-radiusOffSet/2.f;
-	textureRect.width = m_Shape.radius*2+radiusOffSet;
+	textureRect.width = m_Shape.radius*2.f+radiusOffSet;
 	textureRect.height = textureRect.width;
 	DrawTexture(m_Texture, textureRect);
 }
@@ -46,26 +46,28 @@ const Vector2f Asteroid::GetVelocity()
 	return m_Velocity;
 }
 
-void Asteroid::SetRandXVelocity(int maxSpeed, Spaceship* ship)
+float Asteroid::SetRandXVelocity(int maxSpeed, Spaceship* ship)
 {
 	if (ship->GetShape().left < m_Shape.center.x)
 	{
-		m_Velocity.x = -float(rand() % maxSpeed);
+		return -float(rand() % maxSpeed);
 	}
 	else if (ship->GetShape().left > m_Shape.center.x)
 	{
-		m_Velocity.x = float(rand() % maxSpeed);
+		return float(rand() % maxSpeed);
 	}
+	return 0;
 }
 
-void Asteroid::SetRandYVelocity(int maxSpeed, Spaceship* ship)
+float Asteroid::SetRandYVelocity(int maxSpeed, Spaceship* ship)
 {
 	if (ship->GetShape().bottom < m_Shape.center.y)
 	{
-		m_Velocity.y = -float(rand() % maxSpeed);
+		return -float(rand() % maxSpeed);
 	}
 	else if (ship->GetShape().bottom > m_Shape.center.y)
 	{
-		m_Velocity.y = float(rand() % maxSpeed);
+		return float(rand() % maxSpeed);
 	}
+	return 0;
 }

@@ -4,7 +4,7 @@ class Spaceship;
 class Asteroid;
 #pragma region gameInformation
 // Set your name and group in the title here
-std::string g_WindowTitle{ "Project name - Name, firstname - 1DAExx" };
+std::string g_WindowTitle{ "Asteroid - SnauwaertPieter" };
 
 // Change the window dimensions here
 float g_WindowWidth{ 500 };
@@ -19,12 +19,14 @@ const float g_HorSpeed{ 10.f };
 const float g_VertSpeed{ 10.f };
 int g_AsteroidAmount{ 5 };
 const float g_AsteroidSize{ 15.f };
-float m_Time{ 0 };
+float g_SpawnTimer{ 0 };
 bool g_isPressed{ false };
 Spaceship* g_pSpaceship{ nullptr };
 std::vector<Asteroid*>g_pAsteroids;
 Texture g_GameOverText;
 Texture g_RToRestartText;
+Texture g_AmountOfAsteroidText;
+Texture g_Background;
 // Declare your own functions here
 void CreateSpaceship();
 void CreateAsteroids();

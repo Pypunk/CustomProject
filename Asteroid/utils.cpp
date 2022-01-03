@@ -522,15 +522,15 @@ namespace utils
 	}
 	Point2f GetMiddle(const Point2f& pointA, const Point2f& pointB)
 	{
-		return Point2f{ (pointA.x + pointB.x) / 2, (pointA.y + pointB.y) / 2 };
+		return Point2f{ (pointA.x + pointB.x) / 2.f, (pointA.y + pointB.y) / 2.f };
 	}
 	Point2f GetMiddle(float p1x, float p1y, float p2x, float p2y)
 	{
-		return Point2f{ (p1x + p2x) / 2, (p1y + p2y) / 2 };
+		return Point2f{ (p1x + p2x) / 2.f, (p1y + p2y) / 2.f };
 	}
 	Point2f GetMiddle(const Rectf& rect)
 	{
-		return Point2f{ rect.left + rect.width / 2,rect.bottom + rect.height / 2 };
+		return Point2f{ rect.left + rect.width / 2.f,rect.bottom + rect.height / 2.f };
 	}
 	bool IsPointInCircle(const Point2f& p, const Circlef& c)
 	{
@@ -561,6 +561,11 @@ namespace utils
 		const float distance{ GetDistance(c1.center,c2.center)*GetDistance(c1.center,c2.center) };
 		const float radSquared{ powf((c1.radius + c2.radius),2) };
 		return (distance < radSquared);
+	}
+	bool IsOverlapping(const Circlef& circle, const Rectf& rect)
+	{
+		Circlef rectCircle{ GetMiddle(rect),rect.width / 2.f };
+		return IsOverlapping(circle, rectCircle);
 	}
 #pragma endregion CollisionFunctionality
 
@@ -813,6 +818,13 @@ namespace utils
 		Vector2f normal{ Normalize(v) };
 		float dotProduct{ Dot(newVector, normal)} ;
 		return Scale(normal, dotProduct);
+	}
+	Vector2f CreateVector(const Point2f& p1, const Point2f& p2)
+	{
+		Vector2f direction{};
+		direction.x = p2.x - p1.x;
+		direction.y = p2.y - p1.y;
+		return direction;
 	}
 #pragma endregion VectorMath
 }

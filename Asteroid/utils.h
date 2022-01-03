@@ -84,6 +84,7 @@ namespace utils
 	bool IsPointInRect(const Point2f& p, const Rectf& r);
 	bool IsOverlapping(const Rectf& r1, const Rectf& r2);
 	bool IsOverlapping(const Circlef& c1, const Circlef& c2);
+	bool IsOverlapping(const Circlef& circle, const Rectf& rect);
 #pragma endregion CollisionFunctionality
 
 #pragma region OwnFunctions
@@ -119,5 +120,6 @@ namespace utils
 	float AngleBetween(const Vector2f& v1, const Vector2f& v2);
 	bool AreEqual(const Vector2f& v1, const Vector2f& v2);
 	Vector2f CalculateProjection(const Vector2f& v, Vector2f& v2, float angle);
+	Vector2f CreateVector(const Point2f& p1, const Point2f& p2);
 #pragma endregion VectorMath
 }

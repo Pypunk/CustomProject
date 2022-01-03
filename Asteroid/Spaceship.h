@@ -24,6 +24,7 @@ private:
 	float m_Time;
 	Rectf m_Shape;
 	Point2f m_CenterPoint;
+	Texture m_SpaceShip;
 	Texture m_Texture;
 	Texture m_HealthText;
 	Texture m_InvincibleText;

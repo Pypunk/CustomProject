@@ -12,22 +12,29 @@ void Start()
 	CreateAsteroids();
 	TextureFromString("Game Over!", "Resources/DIN-Light.otf", 80, Color4f{1,1,1,1}, g_GameOverText);
 	TextureFromString("Press R to restart!", "Resources/DIN-Light.otf", 40, Color4f{ 1,1,1,1 }, g_RToRestartText);
+	std::string asteroidsAmountString{ "Amount of asteroids: " };
+	asteroidsAmountString += std::to_string(g_AsteroidAmount);
+	TextureFromString(asteroidsAmountString, "Resources/DIN-Light.otf", 20, Color4f{ 1,1,1,1 }, g_AmountOfAsteroidText);
+	TextureFromFile("Resources/Background.jpg", g_Background);
 }
 
 void Draw()
 {
 	const Color4f backgroundColor{ 0,0,0,1 };
 	ClearBackground(backgroundColor.r, backgroundColor.g, backgroundColor.b);
+	DrawTexture(g_Background, Point2f{ 0,0 });
 	g_pSpaceship->Draw(g_WindowWidth,g_WindowHeight);
 	for (int i{}; i < g_AsteroidAmount; ++i)
 	{
 		g_pAsteroids[i]->Draw();
 	}
+	const Point2f asteroidAmountTextPos{ 0,g_WindowHeight - g_AmountOfAsteroidText.height };
+	DrawTexture(g_AmountOfAsteroidText, asteroidAmountTextPos);
 	if (g_pSpaceship->IsDead())
 	{
-		const Rectf gameOverTextPos{ g_WindowWidth / 2 - g_GameOverText.width / 2,g_WindowHeight / 2 - g_GameOverText.height / 2+g_RToRestartText.height,g_GameOverText.width,g_GameOverText.height };
+		const Point2f gameOverTextPos{ g_WindowWidth / 2 - g_GameOverText.width / 2,g_WindowHeight / 2 - g_GameOverText.height / 2+g_RToRestartText.height};
 		DrawTexture(g_GameOverText, gameOverTextPos);
-		const Rectf rToRestartTextPos{ g_WindowWidth / 2 - g_RToRestartText.width / 2,g_WindowHeight / 2 - g_RToRestartText.height / 2-g_RToRestartText.height,g_RToRestartText.width,g_RToRestartText.height };
+		const Point2f rToRestartTextPos{ g_WindowWidth / 2 - g_RToRestartText.width / 2,g_WindowHeight / 2 - g_RToRestartText.height / 2-g_RToRestartText.height};
 		DrawTexture(g_RToRestartText, rToRestartTextPos);
 	}
 }
@@ -61,16 +68,19 @@ void Update(float elapsedSec)
 			g_pSpaceship->SetVertVelocity(g_VertSpeed);
 			g_isPressed = true;
 		}
-		m_Time += elapsedSec;
+		g_SpawnTimer += elapsedSec;
 		Point2f asteroidPosition{};
-		if (10 < m_Time)
+		if (10 < g_SpawnTimer)
 		{
-			m_Time = 0;
+			g_SpawnTimer = 0;
 			asteroidPosition.x = float(rand() % int(g_WindowWidth));
 			asteroidPosition.y = float(rand() % int(g_WindowHeight));
 			g_pAsteroids.push_back(new Asteroid{ asteroidPosition,g_AsteroidSize,g_pSpaceship });
 			g_AsteroidAmount++;
-			std::cout << g_AsteroidAmount << " are now in game\n";
+			DeleteTexture(g_AmountOfAsteroidText);
+			std::string asteroidsAmountString{ "Amount of asteroids: " };
+			asteroidsAmountString += std::to_string(g_AsteroidAmount);
+			TextureFromString(asteroidsAmountString, "Resources/DIN-Light.otf", 20, Color4f{ 1,1,1,1 }, g_AmountOfAsteroidText);
 		}
 	}
 }
@@ -87,6 +97,8 @@ void End()
 	g_pAsteroids.clear();
 	DeleteTexture(g_GameOverText);
 	DeleteTexture(g_RToRestartText);
+	DeleteTexture(g_AmountOfAsteroidText);
+	DeleteTexture(g_Background);
 }
 #pragma endregion gameFunctions
 
@@ -122,9 +134,14 @@ void OnKeyUpEvent(SDL_Keycode key)
 			}
 			g_pAsteroids.clear();
 			g_AsteroidAmount = 5;
+			CreateSpaceship();
+			CreateAsteroids();
+			g_SpawnTimer = 0;
+			DeleteTexture(g_AmountOfAsteroidText);
+			std::string asteroidsAmountString{ "Amount of asteroids: " };
+			asteroidsAmountString += std::to_string(g_AsteroidAmount);
+			TextureFromString(asteroidsAmountString, "Resources/DIN-Light.otf", 20, Color4f{ 1,1,1,1 }, g_AmountOfAsteroidText);
 		}
-		CreateSpaceship();
-		CreateAsteroids();
 		break;
 	}
 }
@@ -158,7 +175,7 @@ void OnMouseUpEvent(const SDL_MouseButtonEvent& e)
 void CreateSpaceship()
 {
 	Point2f starshipPosition{ g_WindowWidth / 2.f,g_WindowHeight / 2.f };
-	float starshipSize{ 10.f };
+	float starshipSize{ 15.f };
 	g_pSpaceship = new Spaceship{ starshipPosition,starshipSize };
 }
 void CreateAsteroids()

@@ -13,14 +13,17 @@ Spaceship::Spaceship(const Point2f& position, float size)
 	,m_TargetPoint{position}
 	,m_IsInvincible{true}
 	,m_Time{}
-	,m_pHealth{new Health{2}}
+	,m_pHealth{new Health{5}}
 {
 	//TextureFromFile("", m_Texture);
 	std::cout << m_pHealth->ToString();
-	TextureFromString(m_pHealth->ToString(), "Resources/DIN-Light.otf", 50, Color4f{ 1,1,1,1 }, m_HealthText);
+	std::string healthString{ "Lives: " };
+	healthString += m_pHealth->ToString();
+	TextureFromString(healthString, "Resources/DIN-Light.otf", 50, Color4f{ 1,1,1,1 }, m_HealthText);
 	std::string invincibleString{ "Invincibility: " };
 	invincibleString += std::to_string(m_Time);
 	TextureFromString(invincibleString, "Resources/DIN-Light.otf", 20, Color4f{ 1,1,1,1 }, m_InvincibleText);
+	TextureFromFile("Resources/Saucer.png", m_SpaceShip);
 }
 
 Spaceship::~Spaceship()
@@ -28,31 +31,32 @@ Spaceship::~Spaceship()
 	DeleteTexture(m_Texture);
 	DeleteTexture(m_HealthText);
 	DeleteTexture(m_InvincibleText);
+	DeleteTexture(m_SpaceShip);
 	delete m_pHealth;
 	m_pHealth = nullptr;
 }
 
 void Spaceship::Draw(float windowWidth, float windowHeight)
 {
-	Color4f color{ 1,1,1,1 };
+	Color4f InvincibleColor{ 1,1,1,1 };
 	if (m_IsInvincible)
 	{
-		color.a = 0.5f;
-	}
-	else
-	{
-		color.a = 1.f;
-	}
-	SetColor(color);
-	FillRect(m_Shape);
-	FillCircle(m_Rocket);
-	Point2f healthTextPos{};
-	DrawTexture(m_HealthText,healthTextPos);
-	if (m_IsInvincible)
-	{
+		InvincibleColor.a = 0.5f;
 		Point2f invincibleTextPos{ windowWidth - m_InvincibleText.width,windowHeight - m_InvincibleText.height };
 		DrawTexture(m_InvincibleText, invincibleTextPos);
 	}
+	else
+	{
+		Color4f bulletColor{ 1,1,1,1 };
+		InvincibleColor.a = 0.f;
+		SetColor(bulletColor);
+		FillCircle(m_Rocket);
+	}
+	SetColor(InvincibleColor);
+	Point2f healthTextPos{};
+	DrawTexture(m_HealthText,healthTextPos);
+	DrawTexture(m_SpaceShip, m_Shape);
+	FillCircle(Circlef{ GetMiddle(m_Shape),m_Shape.width / 2.f });
 }
 
 void Spaceship::Update(float elapsedSec, float windowWidth, float windowHeight)
@@ -67,7 +71,6 @@ void Spaceship::Update(float elapsedSec, float windowWidth, float windowHeight)
 		TextureFromString(invincibleString, "Resources/DIN-Light.otf", 20, Color4f{ 1,1,1,1 }, m_InvincibleText);
 		if (invincibleSeconds < m_Time)
 		{
-			std::cout << int(m_Time) << " seconds have passed, no longer invincible\n";
 			m_Time = 0;
 			m_IsInvincible = false;
 		}
@@ -133,16 +136,16 @@ const bool Spaceship::IsHit(const Circlef& asteroidShape)
 	{
 		return false;
 	}
-	Circlef m_ShapeshipCenterCircle{ GetMiddle(m_Shape).x,GetMiddle(m_Shape).y,10 };
-	if (IsOverlapping(m_ShapeshipCenterCircle, asteroidShape) && m_pHealth->GetHealth() > 0)
+	if (IsOverlapping(asteroidShape,m_Shape) && m_pHealth->GetHealth() > 0)
 	{
 		m_Shape.bottom = m_CenterPoint.y - m_Shape.height / 2.f;
 		m_Shape.left = m_CenterPoint.x - m_Shape.width / 2.f;
 		m_IsInvincible = true;
 		m_pHealth->TakeDamage(1);
 		DeleteTexture(m_HealthText);
-		TextureFromString(m_pHealth->ToString(), "Resources/DIN-Light.otf", 50, Color4f{ 1,1,1,1 }, m_HealthText);
-		std::cout << m_pHealth->ToString();
+		std::string healthString{ "Lives: " };
+		healthString += m_pHealth->ToString();
+		TextureFromString(healthString, "Resources/DIN-Light.otf", 50, Color4f{ 1,1,1,1 }, m_HealthText);
 		return true;
 	}
 	return false;
@@ -211,9 +214,7 @@ void Spaceship::UpdateLeft(float windowWidth)
 void Spaceship::UpdateRocket(float elapsedSec)
 {
 	const float speed{ 10.f };
-	Vector2f direction{};
-	direction.x = m_TargetPoint.x - m_Rocket.center.x;
-	direction.y = m_TargetPoint.y - m_Rocket.center.y;
+	Vector2f direction{ CreateVector(m_Rocket.center,m_TargetPoint) };
 	m_Rocket.center.x += (direction.x * speed) * elapsedSec;
 	m_Rocket.center.y += (direction.y * speed) * elapsedSec;
 	if (IsOverlapping(m_Rocket, Circlef{ m_TargetPoint,10.f }))
