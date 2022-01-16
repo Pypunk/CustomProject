@@ -1,9 +1,8 @@
-﻿  Health.cpp
-  Spaceship.cpp
+﻿  asteroid.cpp
   Generating code
-  0 of 274 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+  3 of 275 functions ( 1.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+    6 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Asteroid.vcxproj -> C:\Users\snauw\Documents\GitHub\CustomProjects\Asteroid\Release\Asteroid.exe
   COPY THE DLL FILES

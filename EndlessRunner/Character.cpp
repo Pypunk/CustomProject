@@ -9,6 +9,7 @@ Character::Character(const Point2f& position, float size)
 	,m_Jumping{false}
 	,m_State{CharacterState::standing}
 	,m_pSprite{new Sprite{"Sprites/RunningKnight.png",8,1,1/15.f,2}}
+	,m_IsLeft{true}
 {
 }
 
@@ -34,7 +35,16 @@ void Character::Draw()
 	}
 	FillRect(m_Shape);
 	Point2f spritePos{ m_Shape.left,m_Shape.bottom - 5.f };
+	glPushMatrix();
+	if (m_IsLeft)
+	{
+		glTranslatef(-(spritePos.x - m_pSprite->GetFrameWith()), 0, 0);
+		spritePos.x *= -1.f;
+		glScalef(-1.f, 1.f, 1.f);
+		glTranslatef((spritePos.x - m_pSprite->GetFrameWith()), 0, 0);
+	}
 	m_pSprite->Draw(spritePos);
+	glPopMatrix();
 }
 
 void Character::Update(float elapsedSec)
@@ -53,11 +63,13 @@ void Character::Update(float elapsedSec)
 	{
 		m_Shape.left += 200.f * elapsedSec;
 		m_State = CharacterState::running;
+		m_IsLeft = false;
 	}
 	if ( pStates[SDL_SCANCODE_LEFT] || pStates[SDL_SCANCODE_A])
 	{
 		m_Shape.left -= 200.f * elapsedSec;
 		m_State = CharacterState::running;
+		m_IsLeft = true;
 	}
 }
 

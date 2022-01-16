@@ -12,7 +12,7 @@ void Start()
 	const float size{ 50.f };
 	g_pCharacter = new Character{ Point2f{g_WindowWidth / 2.f - size / 2.f,g_WindowHeight},size };
 	g_pCamera = new Camera{ g_WindowWidth,g_WindowHeight };
-	Rectf g_Level{ 0,0, g_WindowWidth * 12.f,g_WindowHeight };
+	g_Level = Rectf{ 0,0, g_WindowWidth * 8.f,g_WindowHeight*2.f };
 	g_pCamera->SetLevelBoundaries(g_Level);
 	Point2f position{ 100.f,50.f };
 	float width{ 200.f };
@@ -20,7 +20,7 @@ void Start()
 	for (int i{}; i < g_AmountOfPlatforms; ++i)
 	{
 		g_pPlatform[i] = new Platform{ position,width,height };
-		position.x += width + 100.f;
+		position.x += width + GetRand(0.f,100.f);
 		width = GetRand(100.f, 300.f);
 		position.y = GetRand(0.f, 100.f);
 	}

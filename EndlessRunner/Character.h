@@ -18,6 +18,7 @@ private:
 	Sprite* m_pSprite;
 	float m_Gravity;
 	bool m_Jumping;
+	bool m_IsLeft;
 	enum class CharacterState
 	{
 		jumping,

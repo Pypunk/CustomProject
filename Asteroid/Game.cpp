@@ -75,7 +75,7 @@ void Update(float elapsedSec)
 			g_SpawnTimer = 0;
 			asteroidPosition.x = float(rand() % int(g_WindowWidth));
 			asteroidPosition.y = float(rand() % int(g_WindowHeight));
-			g_pAsteroids.push_back(new Asteroid{ asteroidPosition,g_AsteroidSize,g_pSpaceship });
+			g_pAsteroids.push_back(new Asteroid{ asteroidPosition,g_pSpaceship });
 			g_AsteroidAmount++;
 			DeleteTexture(g_AmountOfAsteroidText);
 			std::string asteroidsAmountString{ "Amount of asteroids: " };
@@ -185,7 +185,7 @@ void CreateAsteroids()
 	{
 		asteroidPosition.x = float(rand() % int(g_WindowWidth));
 		asteroidPosition.y = float(rand() % int(g_WindowHeight));
-		g_pAsteroids.push_back(new Asteroid{ asteroidPosition,g_AsteroidSize,g_pSpaceship });
+		g_pAsteroids.push_back(new Asteroid{ asteroidPosition,g_pSpaceship });
 	}
 }
 void UpdateSpaceship(float elapsedSec)
@@ -245,7 +245,7 @@ void UpdateAsteroidCollisions(float elapsedSec)
 			g_pSpaceship->SetZeroVelocity();
 			delete g_pAsteroids[i];
 			g_pAsteroids[i] = nullptr;
-			g_pAsteroids[i] = new Asteroid{ Point2f{randWidth,randHeight},g_AsteroidSize,g_pSpaceship };
+			g_pAsteroids[i] = new Asteroid{ Point2f{randWidth,randHeight},g_pSpaceship };
 		}
 	}
 }
@@ -257,7 +257,7 @@ void SetNewAsteroidX(float randHeight, const int index)
 		{
 			delete g_pAsteroids[index];
 			g_pAsteroids[index] = nullptr;
-			g_pAsteroids[index] = new Asteroid{ Point2f{0,randHeight},g_AsteroidSize,g_pSpaceship };
+			g_pAsteroids[index] = new Asteroid{ Point2f{0,randHeight},g_pSpaceship };
 		}
 	}
 	else if (g_pAsteroids[index]->GetVelocity().x < 0)
@@ -266,7 +266,7 @@ void SetNewAsteroidX(float randHeight, const int index)
 		{
 			delete g_pAsteroids[index];
 			g_pAsteroids[index] = nullptr;
-			g_pAsteroids[index] = new Asteroid{ Point2f{0,randHeight},g_AsteroidSize,g_pSpaceship };
+			g_pAsteroids[index] = new Asteroid{ Point2f{0,randHeight},g_pSpaceship };
 		}
 	}
 }
@@ -278,7 +278,7 @@ void SetNewAsteroidY(float randWidth, const int index)
 		{
 			delete g_pAsteroids[index];
 			g_pAsteroids[index] = nullptr;
-			g_pAsteroids[index] = new Asteroid{ Point2f{randWidth,0},g_AsteroidSize,g_pSpaceship };
+			g_pAsteroids[index] = new Asteroid{ Point2f{randWidth,0},g_pSpaceship };
 		}
 	}
 	else if (g_pAsteroids[index]->GetVelocity().y < 0)
@@ -287,7 +287,7 @@ void SetNewAsteroidY(float randWidth, const int index)
 		{
 			delete g_pAsteroids[index];
 			g_pAsteroids[index] = nullptr;
-			g_pAsteroids[index] = new Asteroid{ Point2f{randWidth,0},g_AsteroidSize,g_pSpaceship };
+			g_pAsteroids[index] = new Asteroid{ Point2f{randWidth,0},g_pSpaceship };
 		}
 	}
 }

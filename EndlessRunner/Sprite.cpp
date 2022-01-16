@@ -28,7 +28,7 @@ void Sprite::Update(float elapsedSec)
 	}
 }
 
-void Sprite::Draw(const Point2f& pos)
+void Sprite::Draw(const Point2f& pos) // TODO 1: Change to Rectf for flip functionality
 {
 	Rectf srcRect{};
 	srcRect.width = GetFrameWith();

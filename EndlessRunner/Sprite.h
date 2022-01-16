@@ -7,6 +7,7 @@ public:
 	~Sprite();
 	void Update(float elapsedSec);
 	void Draw(const Point2f& pos);
+
 	float GetFrameWith();
 	float GetFrameHeight();
 private:

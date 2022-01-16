@@ -4,8 +4,8 @@
 #include <iostream>
 #include "Spaceship.h"
 
-Asteroid::Asteroid(const Point2f& position, float radius, Spaceship* ship)
-	:m_Shape(position,radius)
+Asteroid::Asteroid(const Point2f& position, Spaceship* ship)
+	:m_Position(position)
 	,m_Texture{}
 {
 	const int maxSpeed{ 200 };
@@ -21,24 +21,25 @@ Asteroid::~Asteroid()
 
 void Asteroid::Draw()
 {
-	const float radiusOffSet{ 5.f };
-	Rectf textureRect{};
-	textureRect.bottom = m_Shape.center.y - m_Shape.radius-radiusOffSet/2.f;
-	textureRect.left = m_Shape.center.x - m_Shape.radius-radiusOffSet/2.f;
-	textureRect.width = m_Shape.radius*2.f+radiusOffSet;
-	textureRect.height = textureRect.width;
-	DrawTexture(m_Texture, textureRect);
+	glPushMatrix();
+	glTranslatef(m_Position.x, m_Position.y, 0.f);
+	glRotatef(m_Angle, 0, 0, 1);
+	glScalef(0.7f, 0.7f, 1.f);
+	Rectf textureRect{ 0,0,m_Texture.width,m_Texture.height };
+	DrawTexture(m_Texture, Point2f{ -GetMiddle(textureRect).x,-GetMiddle(textureRect).y });
+	glPopMatrix();
 }
 
 void Asteroid::Update(float elapsedSec)
 {
-	m_Shape.center.x += m_Velocity.x * elapsedSec;
-	m_Shape.center.y += m_Velocity.y * elapsedSec;
+	m_Angle++;
+	m_Position.x += m_Velocity.x * elapsedSec;
+	m_Position.y += m_Velocity.y * elapsedSec;
 }
 
 const Circlef Asteroid::GetShape()
 {
-	return m_Shape;
+	return Circlef{ m_Position,m_Texture.width / 2.f-10.f };
 }
 
 const Vector2f Asteroid::GetVelocity()
@@ -48,11 +49,11 @@ const Vector2f Asteroid::GetVelocity()
 
 float Asteroid::SetRandXVelocity(int maxSpeed, Spaceship* ship)
 {
-	if (ship->GetShape().left < m_Shape.center.x)
+	if (ship->GetShape().left < m_Position.x)
 	{
 		return -float(rand() % maxSpeed);
 	}
-	else if (ship->GetShape().left > m_Shape.center.x)
+	else if (ship->GetShape().left > m_Position.x)
 	{
 		return float(rand() % maxSpeed);
 	}
@@ -61,11 +62,11 @@ float Asteroid::SetRandXVelocity(int maxSpeed, Spaceship* ship)
 
 float Asteroid::SetRandYVelocity(int maxSpeed, Spaceship* ship)
 {
-	if (ship->GetShape().bottom < m_Shape.center.y)
+	if (ship->GetShape().bottom < m_Position.y)
 	{
 		return -float(rand() % maxSpeed);
 	}
-	else if (ship->GetShape().bottom > m_Shape.center.y)
+	else if (ship->GetShape().bottom > m_Position.y)
 	{
 		return float(rand() % maxSpeed);
 	}

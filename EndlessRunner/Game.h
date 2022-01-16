@@ -13,6 +13,7 @@ float g_WindowHeight{ 300 };
 
 #pragma region ownDeclarations
 // Declare your own global variables here
+Rectf g_Level{};
 class Character;
 Character* g_pCharacter;
 
@@ -20,7 +21,7 @@ class Camera;
 Camera* g_pCamera;
 
 class Platform;
-const int g_AmountOfPlatforms{ 20 };
+const int g_AmountOfPlatforms{ 12 };
 Platform* g_pPlatform[g_AmountOfPlatforms];
 // Declare your own functions here
 
