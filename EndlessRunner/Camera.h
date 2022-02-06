@@ -6,7 +6,7 @@ public:
 	Camera(float width, float height);
 	void Transform(const Rectf& target) const;
 	void SetLevelBoundaries(const Rectf& levelBoundaries);
-
+	
 private:			
 	float m_Width;
 	float m_Height; 

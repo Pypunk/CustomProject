@@ -1,94 +1,54 @@
 #include "pch.h"
 #include "Character.h"
-#include "Platform.h"
+#include "utils.h"
 #include "Sprite.h"
+#include "Tile.h"
+using namespace utils;
 
-Character::Character(const Point2f& position, float size)
-	:m_Shape{ position.x,position.y,size,size }
-	,m_Gravity{9.81f}
-	,m_Jumping{false}
-	,m_State{CharacterState::standing}
-	,m_pSprite{new Sprite{"Sprites/RunningKnight.png",8,1,1/15.f,2}}
-	,m_IsLeft{true}
+Character::Character(const Point2f& position)
+	:m_Shape{position.x,position.y,50,50}
+	,m_Gravity{-9.81f}
+	,m_Velocity{}
+	,m_pTexture{new Sprite{"Resources/adventurer-run3-sword-Sheet.png",6,1,1/10.f,2}}
 {
 }
 
 Character::~Character()
 {
-	delete m_pSprite;
-	m_pSprite = nullptr;
+	delete m_pTexture;
+	m_pTexture = nullptr;
 }
 
-void Character::Draw()
+const void Character::Draw()
 {
-	switch (m_State)
-	{
-	case Character::CharacterState::jumping:
-		SetColor(1, 0, 0, 1);
-		break;
-	case Character::CharacterState::running:
-		SetColor(0, 1, 0, 1);
-		break;
-	case Character::CharacterState::standing:
-		SetColor(0, 0, 1, 1);
-		break;
-	}
-	FillRect(m_Shape);
-	Point2f spritePos{ m_Shape.left,m_Shape.bottom - 5.f };
-	glPushMatrix();
-	if (m_IsLeft)
-	{
-		glTranslatef(-(spritePos.x - m_pSprite->GetFrameWith()), 0, 0);
-		spritePos.x *= -1.f;
-		glScalef(-1.f, 1.f, 1.f);
-		glTranslatef((spritePos.x - m_pSprite->GetFrameWith()), 0, 0);
-	}
-	m_pSprite->Draw(spritePos);
-	glPopMatrix();
+	Point2f shapePos{ m_Shape.left - m_Shape.width / 2.f,m_Shape.bottom - 5.f };
+	m_pTexture->Draw(shapePos);
 }
 
 void Character::Update(float elapsedSec)
 {
-	m_pSprite->Update(elapsedSec);
-	m_Velocity.y -= m_Gravity;
+	m_Velocity.y += m_Gravity;
 	m_Shape.bottom += m_Velocity.y * elapsedSec;
-	m_State = CharacterState::standing;
-	if (m_Jumping)
-	{
-		m_Shape.bottom += 500.f * elapsedSec;
-		m_State = CharacterState::jumping;
-	}
+	float jumpSpeed{ 500.f };
 	const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
-	if ( pStates[SDL_SCANCODE_RIGHT] || pStates[SDL_SCANCODE_D] )
+	if (m_CurrentState == State::jumping)
 	{
-		m_Shape.left += 200.f * elapsedSec;
-		m_State = CharacterState::running;
-		m_IsLeft = false;
+		m_Shape.bottom += jumpSpeed * elapsedSec;
 	}
-	if ( pStates[SDL_SCANCODE_LEFT] || pStates[SDL_SCANCODE_A])
-	{
-		m_Shape.left -= 200.f * elapsedSec;
-		m_State = CharacterState::running;
-		m_IsLeft = true;
-	}
-}
-
-void Character::UpdateCollision(Platform& platform)
-{
-	if (platform.IsOnPlatform(m_Shape))
-	{
-		m_Velocity.y = 0.f;
-		m_Shape.bottom = platform.GetTop();
-		m_Jumping = false;
-	}
-}
-
-const Rectf Character::GetShape()
-{
-	return m_Shape;
+	m_pTexture->Update(elapsedSec);
 }
 
 void Character::Jump()
 {
-	m_Jumping = true;
+	m_CurrentState = State::jumping;
+}
+
+void Character::DoPlatformCollision(Tile* tile)
+{
+	if (IsOverlapping(tile->GetShape(), m_Shape) && !tile->IsSpike())
+	{
+		m_Velocity.y = 0.f;
+		m_Shape.bottom = tile->GetShape().bottom + tile->GetShape().height;
+		m_CurrentState = State::onGround;
+	}
 }

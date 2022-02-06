@@ -1,5 +1,5 @@
 #pragma once
-using namespace utils;
+class Texture;
 class Sprite
 {
 public:
@@ -7,11 +7,10 @@ public:
 	~Sprite();
 	void Update(float elapsedSec);
 	void Draw(const Point2f& pos);
-
 	float GetFrameWith();
 	float GetFrameHeight();
 private:
-	Texture m_Texture;
+	Texture* m_Texture;
 	int m_Cols;
 	int m_Rows;
 	float m_FrameSec;

@@ -1,165 +1,178 @@
-#pragma once
 #include "pch.h"
 #include "Core.h"
 #include <iostream>
-
+#include <algorithm>
 #include <chrono>
+#include "Game.h"
 
-// Variables
-SDL_Window* g_pWindow; // The window we'll be rendering to
-SDL_GLContext g_pContext; // OpenGL context
-Uint32 g_MilliSeconds{};
-const Uint32 g_MaxElapsedTime{ 100 }; // limit in case of breakpoint
-
-#pragma region windowInformation
-
-bool g_IsVSyncOn{ true };
-#pragma endregion windowInformation
-
-#pragma region coreImplementations
-
-
-void Initialize()
+Core::Core( const Window& window )
+	: m_Window{window}
+	, m_Initialized{false}
+	, m_pWindow{nullptr}
+	, m_pContext{nullptr}
+	,m_MaxElapsedSeconds{ 0.1f }
 {
-	
-	//Initialize SDL
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	Initialize( );
+}
+
+Core::~Core( )
+{
+	Cleanup( );
+}
+
+void Core::Initialize( )
+{
+	// disable console close window button
+	HWND hwnd = GetConsoleWindow();
+	HMENU hmenu = GetSystemMenu(hwnd, FALSE);
+	EnableMenuItem(hmenu, SC_CLOSE, MF_GRAYED);
+
+	// Initialize SDL
+	if ( SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0 )
 	{
-		QuitOnSDLError();
+		std::cerr << "Core::Initialize( ), error when calling SDL_Init: " << SDL_GetError( ) << std::endl;
+		return;
 	}
 
-	//Use OpenGL 2.1
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+	// Use OpenGL 2.1
+	SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 );
+	SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
 
-	//Create window
-	g_pWindow = SDL_CreateWindow(
-		g_WindowTitle.c_str(),
+	// Create window
+	m_pWindow = SDL_CreateWindow(
+		m_Window.title.c_str( ),
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
-		int(g_WindowWidth),
-		int(g_WindowHeight),
-		SDL_WINDOW_OPENGL);
-
-	if (g_pWindow == nullptr)
+		int( m_Window.width ),
+		int( m_Window.height ),
+		SDL_WINDOW_OPENGL );
+	if ( m_pWindow == nullptr )
 	{
-		QuitOnSDLError();
+		std::cerr << "Core::Initialize( ), error when calling SDL_CreateWindow: " << SDL_GetError( ) << std::endl;
+		return;
 	}
 
-	// Create an opengl context and attach it to the window 
-	g_pContext = SDL_GL_CreateContext(g_pWindow);
-	if (g_pContext == nullptr)
+	// Create OpenGL context 
+	m_pContext = SDL_GL_CreateContext( m_pWindow );
+	if ( m_pContext == nullptr )
 	{
-		QuitOnSDLError();
+		std::cerr << "Core::Initialize( ), error when calling SDL_GL_CreateContext: " << SDL_GetError( ) << std::endl;
+		return;
 	}
 
-	if (g_IsVSyncOn)
+	// Set the swap interval for the current OpenGL context,
+	// synchronize it with the vertical retrace
+	if ( m_Window.isVSyncOn )
 	{
-		// Synchronize buffer swap with the monitor's vertical refresh
-		if (SDL_GL_SetSwapInterval(1) < 0)
+		if ( SDL_GL_SetSwapInterval( 1 ) < 0 )
 		{
-			QuitOnSDLError();
+			std::cerr << "Core::Initialize( ), error when calling SDL_GL_SetSwapInterval: " << SDL_GetError( ) << std::endl;
+			return;
 		}
 	}
 	else
 	{
-		SDL_GL_SetSwapInterval(0);
+		SDL_GL_SetSwapInterval( 0 );
 	}
+	
+	// Set the Projection matrix to the identity matrix
+	glMatrixMode( GL_PROJECTION ); 
+	glLoadIdentity( );
 
-	// Initialize Projection matrix
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
+	// Set up a two-dimensional orthographic viewing region.
+	gluOrtho2D( 0, m_Window.width, 0, m_Window.height ); // y from bottom to top
 
-	// Set the clipping (viewing) area's left, right, bottom and top
-	gluOrtho2D(0, g_WindowWidth, 0, g_WindowHeight);// y from bottom to top
-
+	// Set the viewport to the client window area
 	// The viewport is the rectangular region of the window where the image is drawn.
-	// Set it to the entire client area of the created window
-	glViewport(0, 0, int(g_WindowWidth), int(g_WindowHeight));
+	glViewport( 0, 0, int( m_Window.width ), int( m_Window.height ) );
 
-	//Initialize Modelview matrix
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	// Set the Modelview matrix to the identity matrix
+	glMatrixMode( GL_MODELVIEW );
+	glLoadIdentity( );
 
 	// Enable color blending and use alpha blending
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-	//Initialize PNG loading
+	// Initialize PNG loading
 	int imgFlags = IMG_INIT_PNG;
-	if (!(IMG_Init(imgFlags) & imgFlags))
+	if ( !( IMG_Init( imgFlags ) & imgFlags ) )
 	{
-		QuitOnImageError();
+		std::cerr << "Core::Initialize( ), error when calling IMG_Init: " << IMG_GetError( ) << std::endl;
+		return;
 	}
 
-	//Initialize SDL_ttf
-	if (TTF_Init() == -1)
+	// Initialize SDL_ttf
+	if ( TTF_Init( ) == -1 )
 	{
-		QuitOnTtfError();
+		std::cerr << "Core::Initialize( ), error when calling TTF_Init: " << TTF_GetError( ) << std::endl;
+		return;
 	}
 
+	//Initialize SDL_mixer
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+	{
+		std::cerr << "Core::Initialize( ), error when calling Mix_OpenAudio: " << Mix_GetError() << std::endl;
+		return;
+	}
+
+	m_Initialized = true;
 }
 
-extern void Start();
-extern void Update(float elapsedSec);
-extern void Draw();
-extern void End();
-
-extern void OnKeyDownEvent(SDL_Keycode key);
-extern void OnKeyUpEvent(SDL_Keycode key);
-extern void OnMouseMotionEvent(const SDL_MouseMotionEvent& e);
-extern void OnMouseDownEvent(const SDL_MouseButtonEvent& e);
-extern void OnMouseUpEvent(const SDL_MouseButtonEvent& e);
-
-
-
-void Run()
+void Core::Run( )
 {
-	//Main loop flag
+	if ( !m_Initialized )
+	{
+		std::cerr << "Core::Run( ), Core not correctly initialized, unable to run the game\n";
+		std::cin.get( );
+		return;
+	}
+
+	// Create the Game object
+	Game* pGame{ new Game{m_Window} };
+
+	// Main loop flag
 	bool quit{ false };
 
 	// Set start time
 	std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
 
-	Start();
-
 	//The event loop
 	SDL_Event e{};
-	while (!quit)
+	while ( !quit )
 	{
 		// Poll next event from queue
-		while (SDL_PollEvent(&e) != 0)
+		while ( SDL_PollEvent( &e ) != 0 )
 		{
 			// Handle the polled event
-			switch (e.type)
+			switch ( e.type )
 			{
 			case SDL_QUIT:
 				quit = true;
 				break;
 			case SDL_KEYDOWN:
-				OnKeyDownEvent(e.key.keysym.sym);
+				pGame->ProcessKeyDownEvent(e.key);
 				break;
 			case SDL_KEYUP:
-				OnKeyUpEvent(e.key.keysym.sym);
+				pGame->ProcessKeyUpEvent(e.key);
 				break;
 			case SDL_MOUSEMOTION:
-				OnMouseMotionEvent(e.motion);
+				e.motion.y = int(m_Window.height) - e.motion.y;
+				pGame->ProcessMouseMotionEvent(e.motion);
 				break;
 			case SDL_MOUSEBUTTONDOWN:
-				OnMouseDownEvent(e.button);
+				e.button.y = int(m_Window.height) - e.button.y;
+				pGame->ProcessMouseDownEvent(e.button);
 				break;
 			case SDL_MOUSEBUTTONUP:
-				OnMouseUpEvent(e.button);
-				break;
-			default:
-				//std::cout << "\n Warning: This event is not captured. \n";
+				e.button.y = int(m_Window.height) - e.button.y;
+				pGame->ProcessMouseUpEvent(e.button);
 				break;
 			}
 		}
 
 		if (!quit)
 		{
-
 			// Get current time
 			std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
 
@@ -170,70 +183,37 @@ void Run()
 			t1 = t2;
 
 			// Prevent jumps in time caused by break points
-			if (elapsedSeconds > g_MaxElapsedTime)
-			{
-				elapsedSeconds = g_MaxElapsedTime;
-			}
+			elapsedSeconds = std::min(elapsedSeconds, m_MaxElapsedSeconds);
 
-			// Call update function, using time in seconds (!)
-			Update(elapsedSeconds);
+			// Call the Game object 's Update function, using time in seconds (!)
+			pGame->Update(elapsedSeconds);
 
 			// Draw in the back buffer
-			Draw();
+			pGame->Draw();
 
-			// Update the window: swap back and front buffer
-			SDL_GL_SwapWindow(g_pWindow);
+			// Update screen: swap back and front buffer
+			SDL_GL_SwapWindow(m_pWindow);
 		}
 	}
-	End();
+	delete pGame;
 }
 
-void Cleanup()
+void Core::Cleanup( )
 {
-	SDL_GL_DeleteContext(g_pContext);
+	SDL_GL_DeleteContext( m_pContext );
 
-	SDL_DestroyWindow(g_pWindow);
-	g_pWindow = nullptr;
+	SDL_DestroyWindow( m_pWindow );
+	m_pWindow = nullptr;
 
 	//Quit SDL subsystems
-	TTF_Quit();
-	IMG_Quit();
-	SDL_Quit();
-}
+	Mix_Quit( );
+	TTF_Quit( );
+	IMG_Quit( );
+	SDL_Quit( );
 
-void QuitOnSDLError()
-{
-	std::cout << "Problem during SDL initialization: ";
-	std::cout << SDL_GetError();
-	std::cout << std::endl;
-	Cleanup();
-	exit(-1);
-}
+	// enable console close window button
+	HWND hwnd = GetConsoleWindow();
+	HMENU hmenu = GetSystemMenu(hwnd, FALSE);
+	EnableMenuItem(hmenu, SC_CLOSE, MF_ENABLED);
 
-void QuitOnOpenGlError()
-{
-	std::cout << "Problem during OpenGL initialization: ";
-	std::cout << SDL_GetError();
-	std::cout << std::endl;
-	Cleanup();
-	exit(-1);
 }
-
-void QuitOnImageError()
-{
-	std::cout << "Problem during SDL_image initialization: ";
-	std::cout << IMG_GetError();
-	std::cout << std::endl;
-	Cleanup();
-	exit(-1);
-}
-
-void QuitOnTtfError()
-{
-	std::cout << "Problem during SDL_ttf initialization: ";
-	std::cout << TTF_GetError();
-	std::cout << std::endl;
-	Cleanup();
-	exit(-1);
-}
-#pragma endregion coreImplementations

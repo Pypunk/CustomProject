@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Sprite.h"
 #include "utils.h"
+#include "Texture.h"
 
 Sprite::Sprite(const std::string& filename, int nrCols, int nrRows, float frameSec, float scale)
 	:m_Cols{nrCols}
@@ -10,12 +11,13 @@ Sprite::Sprite(const std::string& filename, int nrCols, int nrRows, float frameS
 	,m_AccuSec{0}
 	,m_ActFrame{0}
 {
-	TextureFromFile(filename, m_Texture);
+	m_Texture = new Texture{ filename };
 }
 
 Sprite::~Sprite()
 {
-	DeleteTexture(m_Texture);
+	delete m_Texture;
+	m_Texture = nullptr;
 }
 
 void Sprite::Update(float elapsedSec)
@@ -28,7 +30,7 @@ void Sprite::Update(float elapsedSec)
 	}
 }
 
-void Sprite::Draw(const Point2f& pos) // TODO 1: Change to Rectf for flip functionality
+void Sprite::Draw(const Point2f& pos)
 {
 	Rectf srcRect{};
 	srcRect.width = GetFrameWith();
@@ -50,15 +52,15 @@ void Sprite::Draw(const Point2f& pos) // TODO 1: Change to Rectf for flip functi
 	destRect.width = srcRect.width * m_Scale;
 	destRect.height = srcRect.height * m_Scale;
 
-	DrawTexture(m_Texture, destRect, srcRect);
+	m_Texture->Draw(destRect, srcRect);
 }
 
 float Sprite::GetFrameWith()
 {
-	return m_Texture.width/m_Cols;
+	return m_Texture->GetWidth() / m_Cols;
 }
 
 float Sprite::GetFrameHeight()
 {
-	return m_Texture.height/m_Rows;
+	return m_Texture->GetHeight() / m_Rows;
 }

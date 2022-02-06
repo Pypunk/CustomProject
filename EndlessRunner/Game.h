@@ -1,43 +1,35 @@
 #pragma once
-using namespace utils;
-#pragma region gameInformation
-// Set your name and group in the title here
-std::string g_WindowTitle{ "Project name - Name, firstname - 1DAExx" };
-
-// Change the window dimensions here
-float g_WindowWidth{ 500 };
-float g_WindowHeight{ 300 };
-#pragma endregion gameInformation
-
-
-
-#pragma region ownDeclarations
-// Declare your own global variables here
-Rectf g_Level{};
+#include <vector>
 class Character;
-Character* g_pCharacter;
+class Tile;
+class Game final
+{
+public:
+	explicit Game( const Window& window );
+	Game(const Game& other) = delete;
+	Game& operator=(const Game& other) = delete;
+	Game( Game&& other) = delete;
+	Game& operator=(Game&& other) = delete;
+	~Game();
 
-class Camera;
-Camera* g_pCamera;
+	void Update( float elapsedSec );
+	void Draw( ) const;
 
-class Platform;
-const int g_AmountOfPlatforms{ 12 };
-Platform* g_pPlatform[g_AmountOfPlatforms];
-// Declare your own functions here
+	// Event handling
+	void ProcessKeyDownEvent( const SDL_KeyboardEvent& e );
+	void ProcessKeyUpEvent( const SDL_KeyboardEvent& e );
+	void ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e );
+	void ProcessMouseDownEvent( const SDL_MouseButtonEvent& e );
+	void ProcessMouseUpEvent( const SDL_MouseButtonEvent& e );
 
-#pragma endregion ownDeclarations
-
-#pragma region gameFunctions											
-void Start();
-void Draw();
-void Update(float elapsedSec);
-void End();
-#pragma endregion gameFunctions
-
-#pragma region inputHandling											
-void OnKeyDownEvent(SDL_Keycode key);
-void OnKeyUpEvent(SDL_Keycode key);
-void OnMouseMotionEvent(const SDL_MouseMotionEvent& e);
-void OnMouseDownEvent(const SDL_MouseButtonEvent& e);
-void OnMouseUpEvent(const SDL_MouseButtonEvent& e);
-#pragma endregion inputHandling
+private:
+	// DATA MEMBERS
+	const int m_AmountOfTiles{ 18 };
+	const Window m_Window;
+	Character* m_pCharacter;
+	std::vector<Tile*> m_pTiles;
+	// FUNCTIONS
+	void Initialize( );
+	void Cleanup( );
+	void ClearBackground( ) const;
+};

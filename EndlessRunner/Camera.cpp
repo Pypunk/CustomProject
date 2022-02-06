@@ -13,6 +13,7 @@ void Camera::Transform(const Rectf& target) const{
 
 	Rectf cameraRect{ Track(target) };
 	Clamp(cameraRect);
+	utils::SetColor(Color4f{ 1, 0, 0, 1 });
 	glTranslatef(-cameraRect.left, -cameraRect.bottom, 0);
 }
 
@@ -36,8 +37,8 @@ void Camera::Clamp(Rectf& cameraRect) const{
 }
 
 Rectf Camera::Track(const Rectf& target) const {
-	float left{ (target.left - (m_Width / 2.f)) + target.width / 2.f };
-	float bottom{ (target.bottom - (m_Height / 2.f)) + target.height / 2.f };
+	float left{ (target.left - (m_Width / 2)) + target.width / 2 };
+	float bottom{ (target.bottom - (m_Height / 2)) + target.height / 2 };
 	return Rectf { left, bottom, m_Width, m_Height };
 	
 }

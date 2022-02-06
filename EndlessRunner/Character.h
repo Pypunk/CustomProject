@@ -1,30 +1,27 @@
 #pragma once
-class Platform;
+#include "Vector2f.h"
 class Sprite;
-using namespace utils;
+class Tile;
 class Character
 {
 public:
-	Character(const Point2f& position, float size);
+	Character(const Point2f& position);
 	~Character();
-	void Draw();
+
+	const void Draw();
 	void Update(float elapsedSec);
-	void UpdateCollision(Platform& platform);
-	const Rectf GetShape();
 	void Jump();
+	void DoPlatformCollision(Tile* tile);
 private:
-	Rectf m_Shape;
-	Vector2f m_Velocity;
-	Sprite* m_pSprite;
-	float m_Gravity;
-	bool m_Jumping;
-	bool m_IsLeft;
-	enum class CharacterState
+	enum class State
 	{
 		jumping,
-		running,
-		standing
+		onGround
 	};
-	CharacterState m_State;
+	State m_CurrentState{State::onGround};
+	Rectf m_Shape;
+	Vector2f m_Velocity;
+	float m_Gravity;
+	Sprite* m_pTexture;
 };
 
