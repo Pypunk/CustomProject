@@ -23,8 +23,6 @@ void Game::Initialize( )
 	{
 		m_pTiles.push_back(new Tile{ temp });
 		temp.x += m_pTiles[i]->GetShape().width;
-		if (i != 0)
-			m_pTiles[i]->DetectPreviousTile(m_pTiles[i - 1]);
 	}
 }
 

@@ -68,7 +68,6 @@ void Tile::DetectPreviousTile(Tile* previous)
 		delete m_pTexture;
 		m_pTexture = nullptr;
 		m_pTexture = new Texture{ "Resources/Grass.png" };
-		m_IsSpike = false;
 	}
 }
 
