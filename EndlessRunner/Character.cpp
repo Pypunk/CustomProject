@@ -29,7 +29,7 @@ void Character::Update(float elapsedSec)
 {
 	m_Velocity.y += m_Gravity;
 	m_Shape.bottom += m_Velocity.y * elapsedSec;
-	float jumpSpeed{ 500.f };
+	float jumpSpeed{ 300.f };
 	const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
 	if (m_CurrentState == State::jumping)
 	{
@@ -45,10 +45,17 @@ void Character::Jump()
 
 void Character::DoPlatformCollision(Tile* tile)
 {
-	if (IsOverlapping(tile->GetShape(), m_Shape) && !tile->IsSpike())
+	std::vector<Point2f> tileTopPoints{ Point2f{tile->GetShape().left,tile->GetShape().bottom + tile->GetShape().height},
+										Point2f{tile->GetShape().left + tile->GetShape().width,tile->GetShape().bottom + tile->GetShape().height} };
+	utils::HitInfo hit{};
+	if (!tile->IsSpike())
 	{
-		m_Velocity.y = 0.f;
-		m_Shape.bottom = tile->GetShape().bottom + tile->GetShape().height;
-		m_CurrentState = State::onGround;
+		if (Raycast(tileTopPoints, Point2f{ m_Shape.left + m_Shape.width / 2.f,m_Shape.bottom },
+								   Point2f{ m_Shape.left + m_Shape.width / 2.f,m_Shape.bottom + m_Shape.height }, hit))
+		{
+			m_Velocity.y = 0.f;
+			m_Shape.bottom = hit.intersectPoint.y;
+			m_CurrentState = State::onGround;
+		}
 	}
 }
