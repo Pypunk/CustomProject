@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{6634a3d0-e7df-4418-9eaa-726590a9263e}</ProjectGuid>
+    <ProjectGuid>{3d57b52c-f4e2-4dbc-840f-5ad051633700}</ProjectGuid>
     <RootNamespace>RTS</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -29,26 +29,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -151,29 +151,53 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Cavalry.cpp" />
     <ClCompile Include="Core.cpp" />
+    <ClCompile Include="Forest.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Infantry.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Matrix2x3.cpp" />
     <ClCompile Include="pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SelectionRect.cpp" />
+    <ClCompile Include="SoundEffect.cpp" />
+    <ClCompile Include="SoundStream.cpp" />
     <ClCompile Include="structs.cpp" />
+    <ClCompile Include="SVGParser.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Tree.cpp" />
     <ClCompile Include="Unit.cpp" />
+    <ClCompile Include="UnitManager.cpp" />
     <ClCompile Include="utils.cpp" />
+    <ClCompile Include="Vector2f.cpp" />
     <ClCompile Include="Villager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Cavalry.h" />
     <ClInclude Include="Core.h" />
+    <ClInclude Include="Forest.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Infantry.h" />
+    <ClInclude Include="Matrix2x3.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="SelectionRect.h" />
+    <ClInclude Include="SoundEffect.h" />
+    <ClInclude Include="SoundStream.h" />
     <ClInclude Include="structs.h" />
+    <ClInclude Include="SVGParser.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="Tree.h" />
     <ClInclude Include="Unit.h" />
+    <ClInclude Include="UnitManager.h" />
     <ClInclude Include="utils.h" />
+    <ClInclude Include="Vector2f.h" />
     <ClInclude Include="Villager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

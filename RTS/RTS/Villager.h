@@ -5,8 +5,5 @@ class Villager :
 {
 public:
     Villager(const Point2f& position, float size);
-    const void Draw();
-private:
-    Color4f m_Color;
 };
 

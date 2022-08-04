@@ -4,34 +4,38 @@
 Unit::Unit(const Point2f& position, float size)
 	:m_state{UnitState::deselected}
 	, m_Shape{ position.x,position.y,size,size }
-	,m_MoveLocation{GetMiddleOfRect(m_Shape)}
+	,m_MoveLocation{m_Shape.GetCenter()}
+	,m_Color{1,1,1,1}
+	, m_Text{ "Text","Fonts/Pineapple Days.otf",20,Color4f{} }
 {
 }
 
-const void Unit::Draw()
+void Unit::Draw() const
 {
+	utils::SetColor(m_Color);
 	switch (m_state)
 	{
 	case Unit::UnitState::selected:
-		FillRect(m_Shape);
+		utils::FillRect(m_Shape);
 		break;
 	case Unit::UnitState::deselected:
-		DrawRect(m_Shape);
+		utils::DrawRect(m_Shape);
 		break;
 	}
+	m_Text.Draw(m_Shape);
 }
 
 void Unit::MoveTo(float elapsedSec)
 {
-	Point2f middlePoint{ GetMiddleOfRect(m_Shape) };
-	Vector2f direction{ m_MoveLocation.x - middlePoint.x,m_MoveLocation.y - middlePoint.y };
+	Point2f middlePoint{ m_Shape.GetCenter() };
+	Vector2f direction{ middlePoint,m_MoveLocation };
 	m_Shape.left += direction.x * elapsedSec;
 	m_Shape.bottom += direction.y * elapsedSec;
 }
 
 bool Unit::SelectUnit(const Point2f& mousePos)
 {
-	if (IsPointInRect(mousePos, m_Shape))
+	if (utils::IsPointInRect(mousePos, m_Shape))
 	{
 		m_state = UnitState::selected;
 		return true;
@@ -41,7 +45,7 @@ bool Unit::SelectUnit(const Point2f& mousePos)
 
 bool Unit::SelectUnit(const Rectf& selectionRect)
 {
-	if (IsOverlapping(m_Shape, selectionRect))
+	if (utils::IsOverlapping(m_Shape, selectionRect))
 	{
 		m_state = UnitState::selected;
 		return true;
@@ -51,10 +55,10 @@ bool Unit::SelectUnit(const Rectf& selectionRect)
 
 void Unit::SetMoveLocation(const Point2f& newLocation)
 {
-		if (m_state == UnitState::selected)
-		{
-			m_MoveLocation = newLocation;
-		}
+	if (m_state == UnitState::selected)
+	{
+		m_MoveLocation = newLocation;
+	}
 }
 
 const Rectf Unit::GetShape()
@@ -66,3 +70,9 @@ void Unit::Deselect()
 {
 	m_state = UnitState::deselected;
 }
+
+void Unit::Select()
+{
+	m_state = UnitState::selected;
+}
+

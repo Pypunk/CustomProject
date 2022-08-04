@@ -6,7 +6,7 @@
 using namespace utils;
 
 Character::Character(const Point2f& position)
-	:m_Shape{position.x,position.y,50,50}
+	:m_Shape{position.x,position.y,5,5}
 	,m_Gravity{-9.81f}
 	,m_Velocity{}
 	,m_pTexture{new Sprite{"Resources/adventurer-run3-sword-Sheet.png",6,1,1/10.f,2}}

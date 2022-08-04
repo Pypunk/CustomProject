@@ -1,10 +1,9 @@
 #pragma once
-using namespace utils;
 class SelectionRect
 {
 public:
 	SelectionRect();
-	const void Draw();
+	void Draw() const;
 	void UpdateRect(const Point2f& mousePos);
 	void SetFirstPos(const Point2f& position);
 	void SetReleased();

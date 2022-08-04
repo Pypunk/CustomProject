@@ -6,11 +6,11 @@ SelectionRect::SelectionRect()
 {
 }
 
-const void SelectionRect::Draw()
+void SelectionRect::Draw() const
 {
 	if (m_Pressed)
 	{
-		DrawRect(m_Shape);
+		utils::DrawRect(m_Shape);
 	}
 }
 

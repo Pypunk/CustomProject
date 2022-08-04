@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "structs.h"
+#include <vector>
+#include <iostream>
 
 //-----------------------------------------------------------------
 // Window Constructors
@@ -38,6 +40,83 @@ Rectf::Rectf( float left, float bottom, float width, float height )
 	,width{ width }
 	,height{ height }
 {
+}
+
+Rectf::Rectf(Point2f bottomLeft, float width, float height)
+	:left{bottomLeft.x}
+	,bottom{bottomLeft.y}
+	,width{width}
+	,height{height}
+{
+}
+
+void Rectf::Log() const
+{
+	std::cout << "Left: " << Rectf::left << std::endl;
+	std::cout << "Bottom: " << Rectf::bottom << std::endl;
+	std::cout << "Width: " << Rectf::width << std::endl;
+	std::cout << "Height: " << Rectf::height << std::endl;
+}
+
+void Rectf::SetBottomLeft(const Point2f& point)
+{
+	Rectf::left = point.x;
+	Rectf::bottom = point.y;
+}
+
+Point2f Rectf::GetBottomLeft(float offsetX, float offsetY) const
+{
+	return Point2f(Rectf::left + offsetX, Rectf::bottom + offsetY);
+}
+
+Point2f Rectf::GetBottomCenter(float offsetX, float offsetY) const
+{
+	return Point2f(Rectf::left + Rectf::width / 2.f + offsetX, Rectf::bottom + offsetY);
+}
+
+Point2f Rectf::GetBottomRight(float offsetX, float offsetY) const
+{
+	return Point2f(Rectf::left + Rectf::width + offsetX, Rectf::bottom + offsetY);
+}
+
+Point2f Rectf::GetTopLeft(float offsetX, float offsetY) const
+{
+	return Point2f(Rectf::left + offsetX, Rectf::bottom + Rectf::height + offsetY);
+}
+
+Point2f Rectf::GetTopCenter(float offsetX, float offsetY) const
+{
+	return Point2f(Rectf::left + Rectf::width / 2.f + offsetX, Rectf::bottom + Rectf::height + offsetY);
+}
+
+Point2f Rectf::GetTopRight(float offsetX, float offsetY) const
+{
+	return Point2f(Rectf::left + Rectf::width + offsetX, Rectf::bottom + Rectf::height + offsetY);
+}
+
+Point2f Rectf::GetCenterLeft(float offsetX, float offsetY) const
+{
+	return Point2f(Rectf::left + offsetX, Rectf::bottom + Rectf::height / 2.f + offsetY);
+}
+
+Point2f Rectf::GetCenter() const
+{
+	return Point2f(Rectf::left + Rectf::width / 2.f, Rectf::bottom + Rectf::height / 2.f);
+}
+
+Point2f Rectf::GetCenterRight(float offsetX, float offsetY) const
+{
+	return Point2f(Rectf::left + Rectf::width + offsetX, Rectf::bottom + Rectf::height / 2.f + offsetY);
+}
+
+std::vector<Point2f> Rectf::GetVertices() const
+{
+	std::vector<Point2f> vertices;
+	vertices.push_back(Rectf::GetBottomLeft());
+	vertices.push_back(Rectf::GetTopLeft());
+	vertices.push_back(Rectf::GetTopRight());
+	vertices.push_back(Rectf::GetBottomRight());
+	return vertices;
 }
 
 //-----------------------------------------------------------------
@@ -93,19 +172,5 @@ Ellipsef::Ellipsef( const Point2f& center, float radiusX, float radiusY )
 
 Ellipsef::Ellipsef( float centerX, float centerY, float radiusX, float radiusY )
 	: Ellipsef{ Point2f{ centerX, centerY }, radiusX, radiusY }
-{
-}
-
-//-----------------------------------------------------------------
-// Vector2f Constructors
-//-----------------------------------------------------------------
-
-Vector2f::Vector2f()
-	:Vector2f{ 0.f,0.f }
-{
-}
-
-Vector2f::Vector2f(float x, float y)
-	:x{x}, y{y}
 {
 }

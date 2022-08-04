@@ -88,7 +88,7 @@ void Tile::CreateRandomTexture()
 
 void Tile::Update(float elapsedSec, float amountOfTiles)
 {
-	m_Position.x -= 200.f * elapsedSec;
+	m_Position.x -= 100.f * elapsedSec;
 	if (m_Position.x+m_pTexture->GetWidth() < 0)
 	{
 		m_Position.x += m_pTexture->GetWidth() * amountOfTiles;

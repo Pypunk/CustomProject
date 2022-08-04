@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 
 struct Window
 {
@@ -27,12 +28,25 @@ struct Rectf
 {
 	Rectf( );
 	explicit Rectf( float left, float bottom, float width, float height );
+	explicit Rectf(Point2f bottomLeft, float width, float height);
 	
 	float left;
 	float bottom;
 	float width;
 	float height;
 
+	void Log() const;
+	void SetBottomLeft(const Point2f& point);
+	Point2f GetBottomLeft(float offsetX = 0, float offsetY = 0) const;
+	Point2f GetBottomCenter(float offsetX = 0, float offsetY = 0) const;
+	Point2f GetBottomRight(float offsetX = 0, float offsetY = 0) const;
+	Point2f GetTopLeft(float offsetX = 0, float offsetY = 0) const;
+	Point2f GetTopCenter(float offsetX = 0, float offsetY = 0) const;
+	Point2f GetTopRight(float offsetX = 0, float offsetY = 0) const;
+	Point2f GetCenterLeft(float offsetX = 0, float offsetY = 0) const;
+	Point2f GetCenter() const;
+	Point2f GetCenterRight(float offsetX = 0, float offsetY = 0) const;
+	std::vector<Point2f> GetVertices() const;
 };
 
 
@@ -69,17 +83,5 @@ struct Ellipsef
 	float radiusY;
 };
 
-struct Vector2f
-{
-	Vector2f();
-	explicit Vector2f(float x, float y);
 
-	float x;
-	float y;
-};
 
-struct AngleSpeed
-{
-	float angle;
-	float speed;
-};
