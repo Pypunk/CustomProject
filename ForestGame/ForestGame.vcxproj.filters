@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Framework Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="GameFiles">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="GameFiles\GameObject">
+      <UniqueIdentifier>{701c58b7-7e3a-4f85-bab1-7aaba1c95695}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFiles\GameObject\Foliage">
+      <UniqueIdentifier>{306dd839-b7e6-425b-b266-4369964af29c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFiles\GameObject\Stone">
+      <UniqueIdentifier>{36f9d3ab-7498-4580-94fc-ff1f27f7f72f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFiles\GameObject\Portal">
+      <UniqueIdentifier>{040ed6fb-fefe-4931-991e-99beef83247e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFiles\GameObject\Characters">
+      <UniqueIdentifier>{86280c5d-cbc1-4a61-bee2-cd36a9de8498}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFiles\GameObject\Characters\Player">
+      <UniqueIdentifier>{4c6f5b21-e1c1-4048-ab57-237eb9db8995}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFiles\GameObject\Characters\Enemies">
+      <UniqueIdentifier>{4f34e144-7b8b-4172-a008-7e746a0b6b65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFiles\GameObject\Characters\Enemies\Skeleton">
+      <UniqueIdentifier>{893c8079-4a22-40d0-88fc-81e2a528f249}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Game.cpp">
+      <Filter>GameFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>GameFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="Level.cpp">
+      <Filter>GameFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="Foliage.cpp">
+      <Filter>GameFiles\GameObject\Foliage</Filter>
+    </ClCompile>
+    <ClCompile Include="Stone.cpp">
+      <Filter>GameFiles\GameObject\Stone</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>GameFiles\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3f.cpp">
+      <Filter>Framework Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2f.cpp">
+      <Filter>Framework Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils.cpp">
+      <Filter>Framework Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Framework Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SVGParser.cpp">
+      <Filter>Framework Files</Filter>
+    </ClCompile>
+    <ClCompile Include="structs.cpp">
+      <Filter>Framework Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundStream.cpp">
+      <Filter>Framework Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundEffect.cpp">
+      <Filter>Framework Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Framework Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix2x3.cpp">
+      <Filter>Framework Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Framework Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core.cpp">
+      <Filter>Framework Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Portal.cpp">
+      <Filter>GameFiles\GameObject\Portal</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Framework Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>GameFiles\GameObject\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>GameFiles\GameObject\Characters\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>GameFiles\GameObject\Characters\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="Skeleton.cpp">
+      <Filter>GameFiles</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>Framework Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core.h">
+      <Filter>Framework Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix2x3.h">
+      <Filter>Framework Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundEffect.h">
+      <Filter>Framework Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundStream.h">
+      <Filter>Framework Files</Filter>
+    </ClInclude>
+    <ClInclude Include="structs.h">
+      <Filter>Framework Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SVGParser.h">
+      <Filter>Framework Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Framework Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>Framework Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2f.h">
+      <Filter>Framework Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3f.h">
+      <Filter>Framework Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Foliage.h">
+      <Filter>GameFiles\GameObject\Foliage</Filter>
+    </ClInclude>
+    <ClInclude Include="Stone.h">
+      <Filter>GameFiles\GameObject\Stone</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>GameFiles\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>GameFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>GameFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="Level.h">
+      <Filter>GameFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="Portal.h">
+      <Filter>GameFiles\GameObject\Portal</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Framework Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>GameFiles\GameObject\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>GameFiles\GameObject\Characters\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>GameFiles\GameObject\Characters\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="Skeleton.h">
+      <Filter>Framework Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,133 @@
+<BackgroundTexture
+  Texture = "level_1.png"
+  SVG = "level_1.svg"
+/>
+
+<Player
+  Position = "694,742"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "569,657"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "581,411"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "499,547"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "658,600"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "840,679"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "330,758"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "515,926"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "700,859"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "378,1022"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "955,491"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "702,1044"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "825,340"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "555,1197"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "352,1312"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "637,1352"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "881,1156"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "742,1814"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "645,1975"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "372,1832"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "719,1219"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "514,1431"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "823,411"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "750,1606"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "921,1454"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "1054,1331"
+/>

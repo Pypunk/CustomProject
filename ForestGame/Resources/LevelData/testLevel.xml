@@ -1,0 +1,128 @@
+<BackgroundTexture
+  Texture = "test.png"
+  SVG = "test.svg"
+/>
+
+<Player
+  Position = "354,142"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "238,548"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "809,452"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "681,298"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "275,266"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "802,113"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "128,113"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "450,130"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "370,559"
+/>
+
+<Foliage
+  Type = "Bush"
+  Position = "603,169"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "150,483"
+/>
+
+<Foliage
+  Type = "Bush"
+  Position = "266,415"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "702,440"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "873,333"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "978,494"
+/>
+
+<Foliage
+  Type = "Bush"
+  Position = "1029,326"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "782,557"
+/>
+
+<Foliage
+  Type = "Tree"
+  Position = "1075,598"
+/>
+
+<Foliage
+  Type = "Flowers"
+  Position = "540,597"
+/>
+
+<Foliage
+  Type = "Flowers"
+  Position = "364,269"
+/>
+
+<Foliage
+  Type = "Flowers"
+  Position = "985,245"
+/>
+
+<Stone
+  Position = "446,225"
+/>
+
+<Stone
+  Position = "308,476"
+/>
+
+<Stone
+  Position = "1080,171"
+/>
+
+<Stone
+  Position = "692,559"
+/>
+
+<Portal
+  Position = "469,360"
+/>
