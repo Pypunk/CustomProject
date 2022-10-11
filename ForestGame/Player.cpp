@@ -16,26 +16,26 @@ void Player::Update(float elapsedSec)
 	m_Velocity.y = 0.f;
 	m_CurrentState = State::idle;
 	const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
-	if ( pStates[SDL_SCANCODE_RIGHT] )
+	if ( pStates[SDL_SCANCODE_D] )
 	{
 		m_Velocity.x = m_MoveSpeed;
 		m_CurrentState = State::running;
 		m_pRunSprite->Flip(true);
 		m_pIdleSprite->Flip(true);
 	}
-	if (pStates[SDL_SCANCODE_LEFT])
+	if (pStates[SDL_SCANCODE_A])
 	{
 		m_Velocity.x = -m_MoveSpeed;
 		m_CurrentState = State::running;
 		m_pRunSprite->Flip(false);
 		m_pIdleSprite->Flip(false);
 	}
-	if (pStates[SDL_SCANCODE_UP])
+	if (pStates[SDL_SCANCODE_W])
 	{
 		m_Velocity.y = m_MoveSpeed;
 		m_CurrentState = State::running;
 	}
-	if (pStates[SDL_SCANCODE_DOWN])
+	if (pStates[SDL_SCANCODE_S])
 	{
 		m_Velocity.y = -m_MoveSpeed;
 		m_CurrentState = State::running;

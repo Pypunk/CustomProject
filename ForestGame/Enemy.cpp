@@ -13,7 +13,6 @@ void Enemy::MoveToPlayer(const Rectf& player)
 	if (utils::GetDistance(player.GetCenter(),m_Shape.GetCenter()) > 10.f)
 	{
 		Vector2f direction{ m_Shape.GetCenter(),player.GetCenter() };
-		direction = direction.Normalized() * m_MoveSpeed;
 		m_Velocity.x = direction.x;
 		m_Velocity.y = direction.y;
 		m_CurrentState = State::running;

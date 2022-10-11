@@ -6,20 +6,24 @@ Foliage::Foliage(const Point2f& position, int typeId)
 	:GameObject{position}
 	,m_CurrentType{Type{typeId}}
 	,m_Angle{}
-	,m_IsShaking{false}
-	, isRotatingLeft{true}
 {
 	const float scale{ 3.f };
 	const int amountOfTypes{ 3 };
 	const int amountOfTreesPerType{ 4 };
 	std::string path{};
+	int randNr{};
 	switch (m_CurrentType)
 	{
 	case Type::Tree:
 		path = "Resources/Textures/Forest/Trees/";
 		path += "Tree-" + std::to_string(utils::GetRand(1, amountOfTypes));
-		path += "-" + std::to_string(utils::GetRand(1, amountOfTreesPerType)) + ".png";
-		m_IsPassable = false;
+		randNr = utils::GetRand(1, amountOfTreesPerType);
+		path += "-" + std::to_string(randNr) + ".png";
+		m_IsPassable = true;
+		if (randNr >= 2)
+		{
+			m_IsPassable = false;
+		}
 		break;
 	case Type::Bush:
 		path = "Resources/Textures/Forest/Bushes/";
@@ -43,41 +47,6 @@ Foliage::~Foliage()
 {
 }
 
-void Foliage::Update(float elapsedSec)
-{
-	if (m_CurrentType != Type::Tree)
-	{
-		if (m_IsShaking)
-		{
-			if (isRotatingLeft)
-			{
-				m_Angle += 60 * elapsedSec;
-				m_Counter += elapsedSec;
-				if (0.2 < m_Counter)
-				{
-					m_Counter = 0.f;
-					isRotatingLeft = false;
-				}
-			}
-			else
-			{
-				m_Angle -= 60 * elapsedSec;
-				m_Counter += elapsedSec;
-				if (0.2 < m_Counter)
-				{
-					m_Counter = 0.f;
-					isRotatingLeft = true;
-					m_IsShaking = false;
-				}
-			}
-		}
-		else
-		{
-			m_Angle = 0.f;
-		}
-	}
-}
-
 void Foliage::Draw() const
 {
 	glPushMatrix();
@@ -86,12 +55,4 @@ void Foliage::Draw() const
 	glTranslatef(-m_Shape.GetCenter().x, -m_Shape.GetCenter().y, 0.f);
 	GameObject::Draw();
 	glPopMatrix();
-}
-
-void Foliage::SetToShaking(const Rectf& rect)
-{
-	if (utils::IsOverlapping(GetCollisionShape(), rect))
-	{
-		m_IsShaking = true;
-	}
 }

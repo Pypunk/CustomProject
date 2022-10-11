@@ -22,41 +22,7 @@ Level::Level()
 
 void Level::Update(float elapsedSec)
 {
-	for (GameObject* i : m_pObjects)
-	{
-		if (typeid(*i) == typeid(Player))
-		{
-			Player* player{ dynamic_cast<Player*>(i) };
-			player->Update(elapsedSec);
-			for (GameObject* j : m_pObjects)
-			{
-				if (typeid(*j) == typeid(Portal))
-				{
-					Portal* portal{ dynamic_cast<Portal*>(j) };
-					if (portal->IsPlayerOverLapping(player))
-					{
-						m_IsLevelEnded = true;
-					}
-				}
-				if (typeid(*j) == typeid(Foliage))
-				{
-					Foliage* foliage{ dynamic_cast<Foliage*>(j) };
-					player->DoCollisions(foliage);
-					foliage->SetToShaking(player->GetCollisionShape());
-				}
-				if (typeid(*j) == typeid(Stone))
-				{
-					Stone* stone{ dynamic_cast<Stone*>(j) };
-					player->DoCollisions(stone);
-				}
-			}
-		}
-		if (typeid(*i) == typeid(Foliage))
-		{
-			Foliage* foliage{ dynamic_cast<Foliage*>(i) };
-			foliage->Update(elapsedSec);
-		}
-	}
+	UpdateGameObjects(elapsedSec);
 	std::sort(m_pObjects.begin(), m_pObjects.end(), [](const GameObject* lhs, const GameObject* rhs)
 		{
 			return lhs->GetShape().bottom > rhs->GetShape().bottom;
@@ -65,6 +31,7 @@ void Level::Update(float elapsedSec)
 
 void Level::Draw(Camera* camera) const
 {
+	glPushMatrix();
 	for (const GameObject* i : m_pObjects)
 	{
 		if (typeid(*i) == typeid(Player))
@@ -81,6 +48,7 @@ void Level::Draw(Camera* camera) const
 	{
 		DrawDebugMode();
 	}
+	glPopMatrix();
 }
 
 Rectf Level::GetLevelShape() const
@@ -224,6 +192,50 @@ std::string Level::GetAttributeValue(const std::string& attrName, const std::str
 	size_t substrLength{ secondQuote - firstQuote - 1 };
 	attribute = element.substr(firstQuote + 1, substrLength);
 	return attribute;
+}
+
+void Level::UpdateGameObjects(float elapsedSec)
+{
+	Player* player{};
+	int counter{};
+	for (GameObject* i : m_pObjects)
+	{
+		if (typeid(*i) == typeid(Player))
+		{
+			Player* newPlayer{ dynamic_cast<Player*>(i) };
+			player = newPlayer;
+			player->Update(elapsedSec);
+			player->DoCollisions(m_Vertices, elapsedSec);
+			for (GameObject* j : m_pObjects)
+			{
+				if (player)
+				{
+					player->DoCollisions(j,elapsedSec);
+				}
+			}
+		}
+		if (typeid(*i) == typeid(Portal))
+		{
+			Portal* portal{ dynamic_cast<Portal*>(i) };
+			if (player)
+			{
+				if (portal->IsPlayerOverLapping(player))
+				{
+					m_IsLevelEnded = true;
+					player = nullptr;
+				}
+			}
+		}
+		if (typeid(*i) == typeid(Skeleton))
+		{
+			Enemy* enemy{ dynamic_cast<Skeleton*>(i) };
+			if (player)
+			{
+				enemy->MoveToPlayer(player->GetCollisionShape());
+				enemy->Update(elapsedSec);
+			}
+		}
+	}
 }
 
 void Level::DrawDebugMode() const

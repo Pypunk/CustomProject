@@ -109,7 +109,7 @@
       <Filter>GameFiles\GameObject\Characters\Enemies</Filter>
     </ClCompile>
     <ClCompile Include="Skeleton.cpp">
-      <Filter>GameFiles</Filter>
+      <Filter>GameFiles\GameObject\Characters\Enemies\Skeleton</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -180,7 +180,7 @@
       <Filter>GameFiles\GameObject\Characters\Enemies</Filter>
     </ClInclude>
     <ClInclude Include="Skeleton.h">
-      <Filter>Framework Files</Filter>
+      <Filter>GameFiles\GameObject\Characters\Enemies\Skeleton</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

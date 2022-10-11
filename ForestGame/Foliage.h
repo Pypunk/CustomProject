@@ -13,14 +13,9 @@ public:
 	Foliage(const Point2f& position, int typeId);
 	virtual ~Foliage();
 	
-	virtual void Update(float elapsedSec);
 	virtual void Draw() const override;
-	void SetToShaking(const Rectf& rect);
 private:
 	Type m_CurrentType;
 	float m_Angle;
-	bool m_IsShaking;
-	float m_Counter{};
-	bool isRotatingLeft{};
 };
 

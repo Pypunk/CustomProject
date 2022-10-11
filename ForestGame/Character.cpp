@@ -74,70 +74,84 @@ void Character::Draw() const
 		m_pDyingSprite->Draw(m_Shape);
 		break;
 	}
-	utils::DrawRect(m_Shape);
 }
 
-void Character::DoCollisions(GameObject* object)
+void Character::DoCollisions(GameObject* object, float elapsedSec)
 {
-	const Rectf collisionShape{ m_Shape.GetBottomLeft(),m_Shape.width,m_Shape.height / 2.f };
 	if (!object->GetPassable())
 	{
 		utils::HitInfo hitTop{};
-		if (utils::Raycast(object->GetCollisionShape(), collisionShape.GetCenter(), collisionShape.GetTopCenter(), hitTop))
+		if (utils::Raycast(object->GetCollisionShape(), GetCollisionShape().GetBottomCenter(), GetCollisionShape().GetTopCenter(), hitTop) ||
+			utils::Raycast(object->GetCollisionShape(),GetCollisionShape().GetCenterRight(),GetCollisionShape().GetTopRight(),hitTop) ||
+			utils::Raycast(object->GetCollisionShape(),GetCollisionShape().GetCenterLeft(),GetCollisionShape().GetTopLeft(),hitTop))
 		{
-			m_Shape.bottom = hitTop.intersectPoint.y - collisionShape.height;
+			m_Shape.bottom -= m_Velocity.y * elapsedSec;
 		}
 		utils::HitInfo hitRight{};
-		if (utils::Raycast(object->GetCollisionShape(), collisionShape.GetCenter(), collisionShape.GetCenterRight(), hitRight))
+		if (utils::Raycast(object->GetCollisionShape(), GetCollisionShape().GetCenter(), GetCollisionShape().GetCenterRight(), hitRight) ||
+			utils::Raycast(object->GetCollisionShape(), GetCollisionShape().GetTopCenter(), GetCollisionShape().GetTopRight(), hitTop) ||
+			utils::Raycast(object->GetCollisionShape(), GetCollisionShape().GetBottomCenter(), GetCollisionShape().GetBottomRight(), hitTop))
 		{
-			m_Shape.left = hitRight.intersectPoint.x - m_Shape.width;
+			m_Shape.left -= m_Velocity.x * elapsedSec;
 		}
 		utils::HitInfo hitBottom{};
-		if (utils::Raycast(object->GetCollisionShape(), collisionShape.GetCenter(), collisionShape.GetBottomCenter(0.f, -5.f), hitBottom))
+		if (utils::Raycast(object->GetCollisionShape(), GetCollisionShape().GetCenter(), GetCollisionShape().GetBottomCenter(0.f, -5.f), hitBottom) ||
+			utils::Raycast(object->GetCollisionShape(), GetCollisionShape().GetCenterRight(), GetCollisionShape().GetBottomRight(), hitTop) ||
+			utils::Raycast(object->GetCollisionShape(), GetCollisionShape().GetCenterLeft(), GetCollisionShape().GetBottomLeft(), hitTop))
 		{
-			m_Shape.bottom = hitBottom.intersectPoint.y + 5.f;
+			m_Shape.bottom -= m_Velocity.y * elapsedSec;
+			m_Shape.bottom++;
 		}
 		utils::HitInfo hitLeft{};
-		if (utils::Raycast(object->GetCollisionShape(), collisionShape.GetCenter(), collisionShape.GetCenterLeft(-5.f, 0.f), hitLeft))
+		if (utils::Raycast(object->GetCollisionShape(), GetCollisionShape().GetCenter(), GetCollisionShape().GetCenterLeft(-5.f, 0.f), hitLeft) ||
+			utils::Raycast(object->GetCollisionShape(), GetCollisionShape().GetTopCenter(), GetCollisionShape().GetTopLeft(), hitTop) ||
+			utils::Raycast(object->GetCollisionShape(), GetCollisionShape().GetBottomCenter(), GetCollisionShape().GetBottomLeft(), hitTop))
 		{
-			m_Shape.left = hitLeft.intersectPoint.x + 5.f;
+			m_Shape.left -= m_Velocity.x * elapsedSec;
 		}
 	}
 }
 
-void Character::DoCollisions(std::vector<std::vector<Point2f>>& vertices)
+void Character::DoCollisions(std::vector<std::vector<Point2f>>& vertices, float elapsedSec)
 {
-	const Rectf collisionShape{ m_Shape.GetBottomLeft(),m_Shape.width,m_Shape.height / 2.f };
 	utils::HitInfo hitTop{};
 	for (const std::vector<Point2f>& i : vertices)
 	{
-		if (utils::Raycast(i, collisionShape.GetCenter(), collisionShape.GetTopCenter(), hitTop))
+		if (utils::Raycast(i, GetCollisionShape().GetCenter(), GetCollisionShape().GetTopCenter(), hitTop) ||
+			utils::Raycast(i, GetCollisionShape().GetCenterRight(), GetCollisionShape().GetTopRight(), hitTop) ||
+			utils::Raycast(i, GetCollisionShape().GetCenterLeft(), GetCollisionShape().GetTopLeft(), hitTop))
 		{
-			m_Shape.bottom = hitTop.intersectPoint.y - collisionShape.height;
+			m_Shape.bottom -= m_Velocity.y * elapsedSec;
 		}
 	}
 	utils::HitInfo hitRight{};
 	for (const std::vector<Point2f>& i : vertices)
 	{
-		if (utils::Raycast(i, collisionShape.GetCenter(), collisionShape.GetCenterRight(), hitRight))
+		if (utils::Raycast(i, GetCollisionShape().GetCenter(), GetCollisionShape().GetCenterRight(), hitRight) ||
+			utils::Raycast(i, GetCollisionShape().GetTopCenter(), GetCollisionShape().GetTopRight(), hitTop) ||
+			utils::Raycast(i, GetCollisionShape().GetBottomCenter(), GetCollisionShape().GetBottomRight(), hitTop))
 		{
-			m_Shape.left = hitRight.intersectPoint.x - m_Shape.width;
+			m_Shape.left -= m_Velocity.x * elapsedSec;
 		}
 	}
 	utils::HitInfo hitBottom{};
 	for (const std::vector<Point2f>& i : vertices)
 	{
-		if (utils::Raycast(i, collisionShape.GetCenter(), collisionShape.GetBottomCenter(0.f, -5.f), hitBottom))
+		if (utils::Raycast(i, GetCollisionShape().GetCenter(), GetCollisionShape().GetBottomCenter(0.f, -5.f), hitBottom) ||
+			utils::Raycast(i, GetCollisionShape().GetCenterRight(), GetCollisionShape().GetBottomRight(), hitTop) ||
+			utils::Raycast(i, GetCollisionShape().GetCenterLeft(), GetCollisionShape().GetBottomLeft(), hitTop))
 		{
-			m_Shape.bottom = hitBottom.intersectPoint.y + 5.f;
+			m_Shape.bottom -= m_Velocity.y * elapsedSec;
 		}
 	}
 	utils::HitInfo hitLeft{};
 	for (const std::vector<Point2f>& i : vertices)
 	{
-		if (utils::Raycast(i, collisionShape.GetCenter(), collisionShape.GetCenterLeft(-5.f, 0.f), hitLeft))
+		if (utils::Raycast(i, GetCollisionShape().GetCenter(), GetCollisionShape().GetCenterLeft(-5.f, 0.f), hitLeft) ||
+			utils::Raycast(i, GetCollisionShape().GetTopCenter(), GetCollisionShape().GetTopLeft(), hitTop) ||
+			utils::Raycast(i, GetCollisionShape().GetBottomCenter(), GetCollisionShape().GetBottomLeft(), hitTop))
 		{
-			m_Shape.left = hitLeft.intersectPoint.x + 5.f;
+			m_Shape.left -= m_Velocity.x * elapsedSec;
 		}
 	}
 }

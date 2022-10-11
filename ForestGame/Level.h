@@ -32,6 +32,7 @@ private:
 	int ToFoliageTypeId(const std::string& typeStr) const;
 	std::string GetAttributeValue(const std::string& attrName, const std::string& element) const;
 
+	void UpdateGameObjects(float elapsedSec);
 	void DrawDebugMode() const;
 	void ClearLevel();
 };

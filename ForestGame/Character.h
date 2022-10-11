@@ -9,8 +9,8 @@ public:
 
 	virtual void Update(float elapsedSec);
 	virtual void Draw() const override;
-	void DoCollisions(GameObject* object);
-	void DoCollisions(std::vector < std::vector<Point2f>>& vertices);
+	void DoCollisions(GameObject* object, float elapsedSec);
+	void DoCollisions(std::vector < std::vector<Point2f>>& vertices, float elapsedSec);
 protected:
 	enum class State
 	{
