@@ -10,12 +10,17 @@ Enemy::Enemy(const Point2f& position)
 
 void Enemy::MoveToPlayer(const Rectf& player)
 {
-	if (utils::GetDistance(player.GetCenter(),m_Shape.GetCenter()) > 10.f)
+	Vector2f direction{ m_Shape.GetCenter(),player.GetCenter() };
+	m_Velocity.x = direction.x;
+	m_Velocity.y = direction.y;
+	m_CurrentState = State::running;
+	if (m_Shape.GetCenter().x > player.GetCenter().x)
 	{
-		Vector2f direction{ m_Shape.GetCenter(),player.GetCenter() };
-		m_Velocity.x = direction.x;
-		m_Velocity.y = direction.y;
-		m_CurrentState = State::running;
+		m_pRunSprite->Flip(true);
+	}
+	if (m_Shape.GetCenter().x < player.GetCenter().x)
+	{
 		m_pRunSprite->Flip(false);
 	}
+	std::cout << direction;
 }
