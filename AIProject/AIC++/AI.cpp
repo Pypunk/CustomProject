@@ -69,16 +69,15 @@ void AI::Patrol(PatrolPoints& points, float elapsedSec)
 	if (!points.isEmpty())
 	{
 		Follow(points[counter], elapsedSec);
-		if (points.size() > 1)
+		if (utils::GetDistance(m_Shape.GetCenter(),points[counter]) <= 10)
 		{
-			if (utils::GetDistance(points[counter], m_Shape.GetCenter()) < 10.f)
+			if (counter == points.size())
+			{
+				counter = 0;
+			}
+			else
 			{
 				counter++;
-				std::cout << counter << std::endl;
-				if (counter == points.size())
-				{
-					counter = 0;
-				}
 			}
 		}
 	}
