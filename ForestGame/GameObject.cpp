@@ -13,7 +13,6 @@ GameObject::GameObject(const Point2f& position)
 
 GameObject::~GameObject()
 {
-	delete m_pTexture;
 }
 
 

@@ -20,16 +20,20 @@ void PatrolPoints::AddPoint(const Point2f& position)
 	m_Points.push_back(position);
 }
 
-void PatrolPoints::RemovePoint(const Point2f& position)
+void PatrolPoints::RemovePoint(const Point2f& position, int& counter)
 {
-	for (int i{}; i < m_Points.size(); ++i)
+	const float distance{ 50.f };
+	if (m_Points.size() > 1)
 	{
-		if (utils::GetDistance(position, m_Points[i]) < 50.f)
+		for (int i{}; i < m_Points.size(); ++i)
 		{
-			const Point2f temp{ m_Points[i] };
-			m_Points[i] = m_Points.back();
-			m_Points.back() = temp;
-			m_Points.pop_back();
+			if (utils::GetDistance(position, m_Points[i]) < distance)
+			{
+				m_Points[i] = m_Points.back();
+				m_Points.pop_back();
+				counter = static_cast<int>(m_Points.size() - 1);
+				break;
+			}
 		}
 	}
 }
@@ -47,4 +51,9 @@ size_t PatrolPoints::size() const
 bool PatrolPoints::isEmpty() const
 {
 	return m_Points.empty();
+}
+
+std::vector<Point2f> PatrolPoints::GetPoints()
+{
+	return m_Points;
 }

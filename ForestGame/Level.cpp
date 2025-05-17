@@ -13,42 +13,19 @@
 #include <vector>
 #include "Camera.h"
 #include "SVGParser.h"
+#include <queue>
+
+struct GameObjectComparator {
+	bool operator()(const std::shared_ptr<GameObject> lhs, const std::shared_ptr<GameObject> rhs) const {
+		return lhs->GetShape().bottom < rhs->GetShape().bottom;
+	}
+};
+
 Level::Level()
 	:m_IsDebugMode{false}
 	,m_pLevelTexture{nullptr}
 	,m_IsLevelEnded{false}
 {
-}
-
-void Level::Update(float elapsedSec)
-{
-	UpdateGameObjects(elapsedSec);
-	std::sort(m_pObjects.begin(), m_pObjects.end(), [](const GameObject* lhs, const GameObject* rhs)
-		{
-			return lhs->GetShape().bottom > rhs->GetShape().bottom;
-		});
-}
-
-void Level::Draw(Camera* camera) const
-{
-	glPushMatrix();
-	for (const GameObject* i : m_pObjects)
-	{
-		if (typeid(*i) == typeid(Player))
-		{
-			camera->Draw(i->GetShape());
-		}
-	}
-	m_pLevelTexture->Draw(GetLevelShape());
-	for (const GameObject* i : m_pObjects)
-	{
-		i->Draw();
-	}
-	if (m_IsDebugMode)
-	{
-		DrawDebugMode();
-	}
-	glPopMatrix();
 }
 
 Rectf Level::GetLevelShape() const
@@ -76,7 +53,7 @@ void Level::CreateLevelFromFile(const std::string& fileName)
 	{
 		CreateObject(object);
 	}
-	m_pObjects.push_back(new Skeleton{ Point2f{450.f,360.f} });
+	m_pObjects.push_back(std::make_shared<Skeleton>( Point2f{450.f,360.f} ));
 }
 
 bool Level::IsLevelEnded() const
@@ -113,28 +90,28 @@ void Level::CreateFoliage(const std::string& foliage)
 	Point2f position = ToPoint2f(GetAttributeValue("Position", foliage));
 	int type = ToFoliageTypeId(GetAttributeValue("Type", foliage));
 
-	m_pObjects.push_back(new Foliage{ position,type });
+	m_pObjects.push_back(std::make_shared<Foliage>(position,type));
 }
 
 void Level::CreateStone(const std::string& stone)
 {
 	Point2f position = ToPoint2f(GetAttributeValue("Position", stone));
 
-	m_pObjects.push_back(new Stone{ position });
+	m_pObjects.push_back(std::make_shared<Stone>( position ));
 }
 
 void Level::CreatePortal(const std::string& portal)
 {
 	Point2f position = ToPoint2f(GetAttributeValue("Position", portal));
 
-	m_pObjects.push_back(new Portal{ position });
+	m_pObjects.push_back(std::make_shared<Portal>( position ));
 }
 
 void Level::CreateBackgroundTexture(const std::string& texture)
 {
 	std::string path{ "Resources/Textures/Level/" };
 
-	m_pLevelTexture = new Texture{ path + GetAttributeValue("Texture",texture) };
+	m_pLevelTexture = std::make_unique<Texture>( path + GetAttributeValue("Texture",texture ));
 	SVGParser::GetVerticesFromSvgFile(path + GetAttributeValue("SVG", texture), m_Vertices);
 }
 
@@ -142,7 +119,7 @@ void Level::CreatePlayer(const std::string& player)
 {
 	Point2f position = ToPoint2f(GetAttributeValue("Position", player));
 
-	m_pObjects.push_back(new Player{ position });
+	m_pObjects.push_back(std::make_shared<Player>( position ));
 }
 
 Point2f Level::ToPoint2f(const std::string& point2fStr) const
@@ -180,7 +157,6 @@ int Level::ToFoliageTypeId(const std::string& foliageTypeId) const
 	{
 		return 3;
 	}
-
 }
 
 std::string Level::GetAttributeValue(const std::string& attrName, const std::string& element) const
@@ -194,46 +170,135 @@ std::string Level::GetAttributeValue(const std::string& attrName, const std::str
 	return attribute;
 }
 
+void Level::Update(float elapsedSec)
+{
+	UpdateGameObjects(elapsedSec);
+	std::priority_queue<std::shared_ptr<GameObject>, std::vector<std::shared_ptr<GameObject>>, GameObjectComparator> objectQueue;
+	for (const auto& obj : m_pObjects) {
+		objectQueue.push(obj);
+	}
+
+	m_pObjects.clear();
+	while (!objectQueue.empty()) {
+		m_pObjects.push_back(objectQueue.top());
+		objectQueue.pop();
+	}
+}
+
+void Level::UpdatePlayer(std::shared_ptr<Player> player, float elapsedSec)
+{
+	if (player)
+	{
+		player->Update(elapsedSec);
+		player->DoCollisions(m_Vertices, elapsedSec);
+	}
+}
+
+void Level::HandlePlayerCollision(std::shared_ptr<Player> player, float elapsedSec)
+{
+	if (!player)
+	{
+		return;
+	}
+
+	for (const auto& obj : m_pObjects)
+	{
+		if (obj != player) {
+			player->DoCollisions(obj, elapsedSec);
+		}
+	}
+}
+
+void Level::MoveEnemyToPlayer(std::shared_ptr<Enemy> enemy, const Rectf& playerShape, float elapsedSec)
+{
+	if (enemy)
+	{
+		enemy->MoveToPlayer(playerShape);
+	}
+}
+
+void Level::UpdateEnemy(std::shared_ptr<Enemy> enemy, float elapsedSec)
+{
+	if (enemy) {
+		enemy->Update(elapsedSec);
+		enemy->DoCollisions(m_Vertices, elapsedSec);
+	}
+}
+
+void Level::HandleEnemyCollision(std::shared_ptr<Enemy> enemy, float elapsedSec)
+{
+	if (!enemy)
+	{
+		return;
+	}
+
+	for (const auto& obj : m_pObjects)
+	{
+		if (obj != enemy) {
+			enemy->DoCollisions(obj, elapsedSec);
+		}
+	}
+}
+
+void Level::HandlePortal(std::shared_ptr<Portal> portal, std::shared_ptr<Player> player)
+{
+	if (portal && player && portal->IsPlayerOverLapping(player))
+	{
+		m_IsLevelEnded = true;
+	}
+}
+
+void Level::Draw(std::shared_ptr<Camera> camera) const
+{
+	glPushMatrix();
+	for (const auto&  i: m_pObjects)
+	{
+		if (std::shared_ptr<Player> player = dynamic_pointer_cast<Player>(i))
+		{
+			camera->Draw(player->GetShape());
+		}
+	}
+	m_pLevelTexture->Draw(GetLevelShape());
+	for (const auto& i : m_pObjects)
+	{
+		i->Draw();
+	}
+	if (m_IsDebugMode)
+	{
+		DrawDebugMode();
+	}
+	glPopMatrix();
+}
+
 void Level::UpdateGameObjects(float elapsedSec)
 {
-	Player* player{};
-	int counter{};
-	for (GameObject* i : m_pObjects)
+	std::shared_ptr<Player> player = nullptr;
+
+	for (const auto& i : m_pObjects) 
 	{
-		if (typeid(*i) == typeid(Player))
+		if (std::shared_ptr<Player> player = std::dynamic_pointer_cast<Player>(i)) 
 		{
-			Player* newPlayer{ dynamic_cast<Player*>(i) };
-			player = newPlayer;
-			player->Update(elapsedSec);
-			player->DoCollisions(m_Vertices, elapsedSec);
-			for (GameObject* j : m_pObjects)
+			UpdatePlayer(player, elapsedSec);
+			HandlePlayerCollision(player, elapsedSec);
+
+			for (const auto& j : m_pObjects) 
 			{
-				if (player)
+				if (std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(j))
 				{
-					player->DoCollisions(j,elapsedSec);
+					if (std::shared_ptr<Skeleton> skeleton = std::dynamic_pointer_cast<Skeleton>(j))
+					{
+						std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Skeleton>(j);
+						MoveEnemyToPlayer(enemy, player->GetShape(), elapsedSec);
+						UpdateEnemy(enemy, elapsedSec);
+						HandleEnemyCollision(enemy, elapsedSec);
+					}
 				}
 			}
 		}
-		if (typeid(*i) == typeid(Portal))
+
+		if (std::shared_ptr<Portal> portal = std::dynamic_pointer_cast<Portal>(i)) 
 		{
-			Portal* portal{ dynamic_cast<Portal*>(i) };
-			if (player)
-			{
-				if (portal->IsPlayerOverLapping(player))
-				{
-					m_IsLevelEnded = true;
-					player = nullptr;
-				}
-			}
-		}
-		if (typeid(*i) == typeid(Skeleton))
-		{
-			Enemy* enemy{ dynamic_cast<Skeleton*>(i) };
-			if (player)
-			{
-				enemy->MoveToPlayer(player->GetCollisionShape());
-				enemy->Update(elapsedSec);
-			}
+			HandlePortal(portal, player);
 		}
 	}
 }
@@ -246,12 +311,12 @@ void Level::DrawDebugMode() const
 		utils::DrawPolygon(i, true, 5.f);
 	}
 	utils::SetColor(Color4f{ 1,0,0,1 });
-	for (const GameObject* i : m_pObjects)
+	for (const auto& i : m_pObjects)
 	{
 		utils::DrawRect(i->GetCollisionShape());
 	}
 	utils::SetColor(Color4f{ 0,1,0,1 });
-	for (const GameObject* i : m_pObjects)
+	for (const auto& i : m_pObjects)
 	{
 		utils::DrawRect(i->GetShape());
 	}
@@ -259,22 +324,15 @@ void Level::DrawDebugMode() const
 
 void Level::ClearLevel()
 {
-	for (GameObject* i : m_pObjects)
-	{
-		delete i;
-		m_pObjects.pop_back();
-	}
-	delete m_pLevelTexture;
 	m_Vertices.clear();
 }
 
 void Level::ActivatePortal() const
 {
-	for (GameObject* i : m_pObjects)
+	for (const auto& i : m_pObjects)
 	{
-		if (typeid(*i) == typeid(Portal))
+		if (std::shared_ptr<Portal> portal = std::dynamic_pointer_cast<Portal>(i))
 		{
-			Portal* portal{ dynamic_cast<Portal*>(i) };
 			portal->ToggleActive();
 		}
 	}

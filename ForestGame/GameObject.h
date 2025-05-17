@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 class Texture;
 class GameObject
 {
@@ -13,7 +14,7 @@ public:
 
 protected:
 	Rectf m_Shape;
-	Texture* m_pTexture;
+	std::unique_ptr<Texture> m_pTexture;
 	float m_ZIndex;
 	bool m_IsPassable;
 };

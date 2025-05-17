@@ -1,4 +1,7 @@
 #pragma once
+#include <vector>
+#include "Unit.h"
+#include "Buidling.h"
 
 class Game final
 {
@@ -23,12 +26,21 @@ public:
 private:
 	// DATA MEMBERS
 	const Window m_Window;
-	class AI* m_pAI;
-	class PatrolPoints* m_pPatrolPoints;
+	static const int m_AmountOfObjects{6};
+	std::vector<GameObject*> m_pObjects;
+	std::vector<Unit*> selectedUnits;
+	std::vector<Building*> selectedBuildings;
 	Point2f m_MousePos;
-	Point2f m_Target;
+	class SelectionRect* selectionRect;
+	bool m_IsRightMousePressed;
+	Point2f m_RightMouseStartPos;
+	Point2f m_RightMouseEndPos;
+	Point2f m_RightCurrentPos;
 	// FUNCTIONS
 	void Initialize( );
 	void Cleanup( );
 	void ClearBackground( ) const;
+	std::vector<Point2f> GenerateRotatedFormationOffsets(int unitCount, float spacing, const Vector2f& facing);
+	void IssueDirectionalCommand(const Point2f& start, const Point2f& end);
+
 };

@@ -7,7 +7,7 @@ Portal::Portal(const Point2f& position)
 	:GameObject{position}
 	,m_IsActive{false}
 {
-	m_pTexture = new Texture{"Resources/Textures/Portal/Portal.png"};
+	m_pTexture = std::make_unique<Texture>("Resources/Textures/Portal/Portal.png");
 	m_Shape.width = 50.f;
 	m_Shape.height = 100.f;
 }
@@ -21,7 +21,7 @@ void Portal::Draw() const
 }
 
 
-bool Portal::IsPlayerOverLapping(const Player* player)
+bool Portal::IsPlayerOverLapping(std::shared_ptr<Player> player)
 {
 	return utils::IsOverlapping(player->GetCollisionShape(), GetCollisionShape()) && m_IsActive;
 }

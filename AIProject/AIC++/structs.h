@@ -18,6 +18,7 @@ struct Point2f
 	Point2f( );
 	explicit Point2f( float x, float y );
 
+
 	float x;
 	float y;
 };
@@ -104,5 +105,13 @@ struct Ellipsef
 	float radiusY;
 };
 
+struct FormationSlot
+{
+	Point2f positionOffset;
+};
 
+inline Point2f operator+(const Point2f& lhs, const Point2f& rhs)
+{
+	return Point2f{ lhs.x + rhs.x,lhs.y + rhs.y };
+}
 

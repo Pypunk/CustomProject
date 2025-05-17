@@ -5,6 +5,5 @@ class Stone :
 {
 public:
     Stone(const Point2f& position);
-private:
 };
 

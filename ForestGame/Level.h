@@ -2,22 +2,31 @@
 class Camera;
 class GameObject;
 class Texture;
+class Player;
+class Enemy;
+class Portal;
 class Level
 {
 public:
 	Level();
 	~Level();
-	void Update(float elapsedSec);
-	void Draw(Camera* camera) const;
+	void Draw(std::shared_ptr<Camera> camera) const;
 	Rectf GetLevelShape() const;
 	void ToggleDebugMode();
 
 	void CreateLevelFromFile(const std::string& fileName);
 	bool IsLevelEnded() const;
 	void ActivatePortal() const;
+	void Update(float elapsedSec);
+	void UpdatePlayer(std::shared_ptr<Player> player, float elapsedSec);
+	void HandlePlayerCollision(std::shared_ptr<Player> player, float elapsedSec);
+	void MoveEnemyToPlayer(std::shared_ptr<Enemy> enemy, const Rectf& playerShape, float elapsedSec);
+	void UpdateEnemy(std::shared_ptr<Enemy> enemy, float elapsedSec);
+	void HandleEnemyCollision(std::shared_ptr<Enemy> enemy, float elapsedSec);
+	void HandlePortal(std::shared_ptr<Portal> portal, std::shared_ptr<Player> player);
 private:
-	std::vector<GameObject*> m_pObjects;
-	Texture* m_pLevelTexture;
+	std::vector<std::shared_ptr<GameObject>> m_pObjects;
+	std::unique_ptr<Texture> m_pLevelTexture;
 	std::vector<std::vector<Point2f>> m_Vertices;
 	bool m_IsDebugMode;
 	bool m_IsLevelEnded;

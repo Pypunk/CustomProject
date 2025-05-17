@@ -7,5 +7,7 @@ public:
 	Player(const Point2f& position);
 
 	void Update(float elapsedSec) override;
+private:
+	void HandleInput();
 };
 

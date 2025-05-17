@@ -738,4 +738,32 @@ int utils::GetColIndex(int index, int nrCols)
 {
 	return index % nrCols;
 }
+void utils::DrawArrow(const Point2f& from, const Point2f& to, float arrowSize)
+{
+	glBegin(GL_LINES);
+	glVertex2f(from.x, from.y);
+	glVertex2f(to.x, to.y);
+	glEnd();
+
+	// Arrowhead
+	Vector2f dir(from, to);
+	dir = dir.Normalized() * arrowSize;
+
+	float angle = std::atan2(dir.y, dir.x);
+
+	// Create two arrowhead lines
+	float leftAngle = angle + float(M_PI) * 3.0f / 4.0f;
+	float rightAngle = angle - float(M_PI) * 3.0f / 4.0f;
+
+	Point2f left(to.x + std::cos(leftAngle) * arrowSize, to.y + std::sin(leftAngle) * arrowSize);
+	Point2f right(to.x + std::cos(rightAngle) * arrowSize, to.y + std::sin(rightAngle) * arrowSize);
+
+	glBegin(GL_LINES);
+	glVertex2f(to.x, to.y);
+	glVertex2f(left.x, left.y);
+
+	glVertex2f(to.x, to.y);
+	glVertex2f(right.x, right.y);
+	glEnd();
+}
 #pragma endregion OwnFunctions

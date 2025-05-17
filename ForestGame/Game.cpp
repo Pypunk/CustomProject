@@ -5,8 +5,6 @@
 
 Game::Game( const Window& window ) 
 	:m_Window{ window }
-	, m_pCamera{ new Camera{window.width,window.height} }
-	, m_pLevel{ new Level{} }
 	, m_IsLevelLoading{false}
 {
 	Initialize( );
@@ -19,14 +17,14 @@ Game::~Game( )
 
 void Game::Initialize( )
 {
+	m_pLevel = std::make_shared<Level>();
 	m_pLevel->CreateLevelFromFile("Resources/LevelData/testLevel.xml");
+	m_pCamera = std::make_shared<Camera>(m_Window.width, m_Window.height);
 	m_pCamera->SetLevelBoundaries(m_pLevel->GetLevelShape());
 }
 
 void Game::Cleanup( )
 {
-	delete m_pCamera;
-	delete m_pLevel;
 }
 
 void Game::Update( float elapsedSec )

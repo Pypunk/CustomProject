@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{8c4ada12-4c53-443d-aeeb-0dfb9ca399f0}</ProjectGuid>
-    <RootNamespace>AIC</RootNamespace>
+    <ProjectGuid>{642b5728-e403-49f2-8510-fe96ffe26d82}</ProjectGuid>
+    <RootNamespace>TemplateTest</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -59,19 +59,15 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="SDLWin32.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="SDLWin32.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="SDLx64.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="SDLx64.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -139,48 +135,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Buidling.cpp" />
-    <ClCompile Include="Core.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Matrix2x3.cpp" />
-    <ClCompile Include="PatrolPoints.cpp" />
+    <ClCompile Include="blob.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="SelectionRect.cpp" />
-    <ClCompile Include="SoundEffect.cpp" />
-    <ClCompile Include="SoundStream.cpp" />
-    <ClCompile Include="structs.cpp" />
-    <ClCompile Include="SVGParser.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="Unit.cpp" />
-    <ClCompile Include="utils.cpp" />
-    <ClCompile Include="Vector2f.cpp" />
-    <ClCompile Include="Vector3f.cpp" />
+    <ClCompile Include="TemplateTest.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Buidling.h" />
-    <ClInclude Include="Core.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="GameObject.h" />
-    <ClInclude Include="Matrix2x3.h" />
-    <ClInclude Include="PatrolPoints.h" />
+    <ClInclude Include="blob.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="SelectionRect.h" />
-    <ClInclude Include="SoundEffect.h" />
-    <ClInclude Include="SoundStream.h" />
-    <ClInclude Include="structs.h" />
-    <ClInclude Include="SVGParser.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="Unit.h" />
-    <ClInclude Include="utils.h" />
-    <ClInclude Include="Vector2f.h" />
-    <ClInclude Include="Vector3f.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

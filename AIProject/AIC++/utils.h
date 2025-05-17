@@ -93,5 +93,6 @@ namespace utils
 	int GetIndex(int rowIdx, int colIdx, int nrCols);
 	int GetRowIndex(int index, int nrCols);
 	int GetColIndex(int index, int nrCols);
+	void DrawArrow(const Point2f& from, const Point2f& to, float arrowSize);
 #pragma endregion OwnFunctions
 }

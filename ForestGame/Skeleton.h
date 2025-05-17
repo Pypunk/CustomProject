@@ -5,5 +5,9 @@ class Skeleton :
 {
 public:
     Skeleton(const Point2f& position);
+
+    Rectf GetDamageShape() const;
+private:
+    Rectf m_DamageShape;
 };
 

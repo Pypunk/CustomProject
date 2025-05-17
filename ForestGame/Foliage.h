@@ -4,7 +4,7 @@ class Texture;
 class Foliage : public GameObject
 {
 public:
-	enum class Type
+	enum class Type :int
 	{
 		Tree = 1,
 		Bush = 2,
@@ -17,5 +17,7 @@ public:
 private:
 	Type m_CurrentType;
 	float m_Angle;
+
+	std::string GenerateImagePath(Type type, int randNr) const;
 };
 

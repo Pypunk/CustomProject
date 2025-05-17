@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 class Level;
 class Camera;
 class Game final
@@ -24,8 +25,8 @@ public:
 private:
 	// DATA MEMBERS
 	const Window m_Window;
-	Camera* m_pCamera;
-	Level* m_pLevel;
+	std::shared_ptr<Camera> m_pCamera;
+	std::shared_ptr<Level> m_pLevel;
 	bool m_IsLevelLoading;
 
 	// FUNCTIONS
