@@ -139,10 +139,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ArcheryRange.cpp" />
+    <ClCompile Include="Barracks.cpp" />
     <ClCompile Include="Buidling.cpp" />
+    <ClCompile Include="Cavalry.cpp" />
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Infantry.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix2x3.cpp" />
     <ClCompile Include="PatrolPoints.cpp" />
@@ -152,35 +156,49 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Ranged.cpp" />
     <ClCompile Include="SelectionRect.cpp" />
     <ClCompile Include="SoundEffect.cpp" />
     <ClCompile Include="SoundStream.cpp" />
+    <ClCompile Include="Stables.cpp" />
     <ClCompile Include="structs.cpp" />
     <ClCompile Include="SVGParser.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TownCenter.cpp" />
     <ClCompile Include="Unit.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="Vector2f.cpp" />
     <ClCompile Include="Vector3f.cpp" />
+    <ClCompile Include="Villager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AllBuildings.h" />
+    <ClInclude Include="AllUnits.h" />
+    <ClInclude Include="ArcheryRange.h" />
+    <ClInclude Include="Barracks.h" />
     <ClInclude Include="Buidling.h" />
+    <ClInclude Include="Cavalry.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Infantry.h" />
     <ClInclude Include="Matrix2x3.h" />
     <ClInclude Include="PatrolPoints.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Ranged.h" />
     <ClInclude Include="SelectionRect.h" />
     <ClInclude Include="SoundEffect.h" />
     <ClInclude Include="SoundStream.h" />
+    <ClInclude Include="Stables.h" />
     <ClInclude Include="structs.h" />
     <ClInclude Include="SVGParser.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TownCenter.h" />
     <ClInclude Include="Unit.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="Vector2f.h" />
     <ClInclude Include="Vector3f.h" />
+    <ClInclude Include="Villager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

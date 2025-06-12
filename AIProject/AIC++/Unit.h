@@ -10,13 +10,21 @@ public:
 		Following,
 		Patrolling
 	};
+	enum class UnitType
+	{
+		Villager,
+		Infantry,
+		Cavalry,
+		Ranged
+	};
 	Unit(const Point2f& position);
 	~Unit();
 
-	void Update(std::vector<GameObject*>& others,float elapsedSec) override;
+	void Draw() const override;
+	void Update(std::vector<std::unique_ptr<GameObject>>& other,float elapsedSec) override;
 	void Face(const Point2f& target, float elapsedSec);
 	void Follow(const Point2f& target, float elapsedSec);
-	void Patrol(float elapsedSec, std::vector<GameObject*>& others);
+	void Patrol(float elapsedSec, std::vector<std::unique_ptr<GameObject>>& others);
 	void ToggleState(State state);
 	
 	void CommandAI(const Point2f& target);
@@ -28,6 +36,7 @@ public:
 	int counter{};
 
 	GameObjectType GetType() const override;
+	virtual UnitType GetUnitType() const = 0;
 private:
 	State m_State;
 	Point2f m_Target;

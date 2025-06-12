@@ -115,3 +115,15 @@ inline Point2f operator+(const Point2f& lhs, const Point2f& rhs)
 	return Point2f{ lhs.x + rhs.x,lhs.y + rhs.y };
 }
 
+struct ResourceCost
+{
+	explicit ResourceCost(int food, int wood, int gold);
+	bool CanAfford(const ResourceCost& playerResources) const;
+	void DeductFrom(ResourceCost& playerResources);
+	void AddResources(const ResourceCost& playerResources);
+	void Print();
+
+	int food;
+	int wood;
+	int gold;
+};

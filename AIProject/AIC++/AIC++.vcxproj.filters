@@ -25,6 +25,33 @@
     <Filter Include="Game Files\GameObjects\Buildings">
       <UniqueIdentifier>{0e2dc92b-d323-40ba-ba16-eb95ae31e528}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Files\GameObjects\Units\Villager">
+      <UniqueIdentifier>{4ab8c579-ed56-4ec0-9951-a80d4b3b1caf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\GameObjects\Buildings\TownCenter">
+      <UniqueIdentifier>{eb4d8549-5b42-47d4-abbe-04a76ab795ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\GameObjects\Buildings\Barracks">
+      <UniqueIdentifier>{70c05632-2897-42f5-94f6-895f96236d97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\GameObjects\Units\Infantry">
+      <UniqueIdentifier>{0226045e-06fa-4306-b148-212dc443ba3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\GameObjects\Resources">
+      <UniqueIdentifier>{242c55dc-532a-4d87-ad6b-bdf54b18ca59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\GameObjects\Buildings\ArcheryRange">
+      <UniqueIdentifier>{d60fd934-c41b-4100-adc1-7a6155728e28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\GameObjects\Buildings\Stables">
+      <UniqueIdentifier>{dd959081-e490-4e29-8fe1-b5c3783ec9fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\GameObjects\Units\Ranged">
+      <UniqueIdentifier>{0b3de810-ed50-4542-b5b7-e9985c79a626}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\GameObjects\Units\Cavalry">
+      <UniqueIdentifier>{9b69d3ed-e719-4746-9ec8-4e0347140fde}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -79,7 +106,31 @@
       <Filter>Game Files\Misc</Filter>
     </ClCompile>
     <ClCompile Include="Buidling.cpp">
-      <Filter>Framework Files</Filter>
+      <Filter>Game Files\GameObjects\Buildings</Filter>
+    </ClCompile>
+    <ClCompile Include="TownCenter.cpp">
+      <Filter>Game Files\GameObjects\Buildings\TownCenter</Filter>
+    </ClCompile>
+    <ClCompile Include="Villager.cpp">
+      <Filter>Game Files\GameObjects\Units\Villager</Filter>
+    </ClCompile>
+    <ClCompile Include="Barracks.cpp">
+      <Filter>Game Files\GameObjects\Buildings\Barracks</Filter>
+    </ClCompile>
+    <ClCompile Include="Infantry.cpp">
+      <Filter>Game Files\GameObjects\Units\Infantry</Filter>
+    </ClCompile>
+    <ClCompile Include="ArcheryRange.cpp">
+      <Filter>Game Files\GameObjects\Buildings\ArcheryRange</Filter>
+    </ClCompile>
+    <ClCompile Include="Stables.cpp">
+      <Filter>Game Files\GameObjects\Buildings\Stables</Filter>
+    </ClCompile>
+    <ClCompile Include="Ranged.cpp">
+      <Filter>Game Files\GameObjects\Units\Ranged</Filter>
+    </ClCompile>
+    <ClCompile Include="Cavalry.cpp">
+      <Filter>Game Files\GameObjects\Units\Cavalry</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -132,7 +183,37 @@
       <Filter>Game Files\Misc</Filter>
     </ClInclude>
     <ClInclude Include="Buidling.h">
-      <Filter>Game Files</Filter>
+      <Filter>Game Files\GameObjects\Buildings</Filter>
+    </ClInclude>
+    <ClInclude Include="TownCenter.h">
+      <Filter>Game Files\GameObjects\Buildings\TownCenter</Filter>
+    </ClInclude>
+    <ClInclude Include="Villager.h">
+      <Filter>Game Files\GameObjects\Units\Villager</Filter>
+    </ClInclude>
+    <ClInclude Include="AllUnits.h">
+      <Filter>Game Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="AllBuildings.h">
+      <Filter>Game Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Barracks.h">
+      <Filter>Game Files\GameObjects\Buildings\Barracks</Filter>
+    </ClInclude>
+    <ClInclude Include="Infantry.h">
+      <Filter>Game Files\GameObjects\Units\Infantry</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcheryRange.h">
+      <Filter>Game Files\GameObjects\Buildings\ArcheryRange</Filter>
+    </ClInclude>
+    <ClInclude Include="Stables.h">
+      <Filter>Game Files\GameObjects\Buildings\Stables</Filter>
+    </ClInclude>
+    <ClInclude Include="Ranged.h">
+      <Filter>Game Files\GameObjects\Units\Ranged</Filter>
+    </ClInclude>
+    <ClInclude Include="Cavalry.h">
+      <Filter>Game Files\GameObjects\Units\Cavalry</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

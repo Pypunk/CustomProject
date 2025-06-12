@@ -210,3 +210,36 @@ Cubef::Cubef(Rectf rect, float dept)
 	:Cubef{ rect.GetBottomLeft(),rect.width,rect.height,dept }
 {
 }
+
+ResourceCost::ResourceCost(int food, int wood, int gold)
+	:food(food)
+	,wood(wood)
+	,gold(gold)
+{
+}
+
+bool ResourceCost::CanAfford(const ResourceCost& playerResources) const
+{
+	return playerResources.wood >= wood &&
+		playerResources.gold >= gold &&
+		playerResources.food >= food;
+}
+
+void ResourceCost::DeductFrom(ResourceCost& playerResources)
+{
+	playerResources.wood -= wood;
+	playerResources.gold -= gold;
+	playerResources.food -= food;
+}
+
+void ResourceCost::AddResources(const ResourceCost& playerResources)
+{
+	wood += playerResources.wood;
+	food += playerResources.food;
+	gold += playerResources.gold;
+}
+
+void ResourceCost::Print()
+{
+	std::cout << "Wood: " << wood << "\nFood: " << food << "\nGold: " << gold << "\n";
+}

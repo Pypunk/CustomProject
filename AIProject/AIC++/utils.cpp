@@ -710,7 +710,7 @@ int utils::GetRand(int min, int max)
 
 float utils::GetRand(float min, float max)
 {
-	return ((rand() % int(max * 100)) + min * 100) / 100;
+	return min + static_cast<float>(rand()) / RAND_MAX * (max - min);
 }
 float utils::ConvertToRadians(float degrees)
 {

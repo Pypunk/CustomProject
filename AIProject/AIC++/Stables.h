@@ -1,0 +1,12 @@
+#pragma once
+#include "Buidling.h"
+class Stables :
+    public Building
+{
+public:
+    Stables(const Point2f& position);
+
+    BuildingType GetBuildingType() const override;
+    ResourceCost GetCost() const override;
+};
+

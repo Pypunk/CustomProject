@@ -1,26 +1,25 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Game.h"
-#include "Unit.h"
 #include "PatrolPoints.h"
 #include "SelectionRect.h"
+#include "AllBuildings.h"
+#include "AllUnits.h"
 #include <iostream>
-#include "Buidling.h"
 Game::Game(const Window& window)
 	:m_Window{ window }
 	, selectionRect{ new SelectionRect{Rectf{0,0,window.width,window.height}} }
 	, m_IsRightMousePressed{ false }
 	, m_RightCurrentPos{ m_MousePos }
+	, m_Resources{ 500,500,500 }
 {
 	Initialize();
 	float size{ 50.f };
 	Point2f Position{ window.width / 2.f - (m_AmountOfObjects * size / 2.f),window.height / 2.f };
 	for (int i{}; i < m_AmountOfObjects; i++)
 	{
-		m_pObjects.push_back(new Unit{ Point2f{Position.x,Position.y} });
+		m_pObjects.push_back(std::make_unique<Villager>(Point2f{ Position.x,Position.y }));
 		Position.x += size;
 	}
-	Position.x += size;
-	m_pObjects.push_back(new Building{ Point2f{ Position.x,Position.y } });
 }
 
 Game::~Game( )
@@ -35,34 +34,38 @@ void Game::Initialize( )
 
 void Game::Cleanup( )
 {
-	for (size_t i{}; i < m_pObjects.size(); ++i) 
-	{
-		delete m_pObjects[i];
-	}
 	delete selectionRect;
 }
 
 void Game::Update( float elapsedSec )
 {
-	for (GameObject* object : m_pObjects)
+	for (const std::unique_ptr<GameObject>& object : m_pObjects)
 	{
-		object->Update(m_pObjects, elapsedSec);
+		if (object)
+		{
+			object->Update(m_pObjects, elapsedSec);
+		}
+		Villager* villager = dynamic_cast<Villager*>(object.get());
+		if (villager && villager->IsSelected() && villager->IsInBuildMode())
+		{
+			villager->UpdateBuildingLocation(m_MousePos, m_pObjects);
+		}
 	}
+	std::vector<std::unique_ptr<GameObject>> toSpawn;
+	SpawnUnit(toSpawn);
 }
 
 void Game::Draw( ) const
 {
 	ClearBackground( );
-	for (const GameObject* object : m_pObjects)
+	for (const std::unique_ptr<GameObject>& object : m_pObjects)
 	{
-		object->Draw();
+		if (object)
+		{
+			object->Draw();
+		}
 	}
 	utils::DrawPoint(m_MousePos, 5.f);
-	if (m_IsRightMousePressed && selectedUnits.size() >= 1)
-	{
-		utils::SetColor(Color4f{ 1,1,0,1 });
-		utils::DrawArrow(m_RightMouseStartPos, m_RightCurrentPos, 10);
-	}
 	selectionRect->Draw();
 }
 
@@ -76,37 +79,59 @@ void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 	//std::cout << "KEYUP event: " << e.keysym.sym << std::endl;
 	switch ( e.keysym.sym )
 	{
-	case SDLK_f:	
-		for (GameObject* object : m_pObjects) 
+	case SDLK_t:
+		TurnOnBuildModeForSelectedVillagers();
+		m_Resources.Print();
+		for (auto& obj : m_pObjects)
 		{
-			Unit* unit = dynamic_cast<Unit*>(object);
-			if (unit != nullptr)
+			Villager* villager = dynamic_cast<Villager*>(obj.get());
+			if (villager && villager->IsInBuildMode())
 			{
-				unit->ToggleState(Unit::State::Following);
+				villager->SetPlannedBuilding(Building::BuildingType::TownCenter);
 			}
 		}
 		break;
-	case SDLK_l:
-		for (GameObject* object : m_pObjects)
+	case SDLK_b:
+		TurnOnBuildModeForSelectedVillagers();
+		m_Resources.Print();
+		for (auto& obj : m_pObjects)
 		{
-			Unit* unit = dynamic_cast<Unit*>(object);
-			if (unit != nullptr)
+			Villager* villager = dynamic_cast<Villager*>(obj.get());
+			if (villager && villager->IsInBuildMode())
 			{
-				unit->ToggleState(Unit::State::Face);
+				villager->SetPlannedBuilding(Building::BuildingType::Barracks);
 			}
 		}
 		break;
-	case SDLK_p:
-		for (GameObject* object : m_pObjects)
+	case SDLK_a:
+		TurnOnBuildModeForSelectedVillagers();
+		m_Resources.Print();
+		for (auto& obj : m_pObjects)
 		{
-			Unit* unit = dynamic_cast<Unit*>(object);
-			if (unit != nullptr)
+			Villager* villager = dynamic_cast<Villager*>(obj.get());
+			if (villager && villager->IsInBuildMode())
 			{
-				unit->ToggleState(Unit::State::Patrolling);
+				villager->SetPlannedBuilding(Building::BuildingType::ArcheryRange);
 			}
 		}
+		break;
+	case SDLK_s:
+		TurnOnBuildModeForSelectedVillagers();
+		m_Resources.Print();
+		for (auto& obj : m_pObjects)
+		{
+			Villager* villager = dynamic_cast<Villager*>(obj.get());
+			if (villager && villager->IsInBuildMode())
+			{
+				villager->SetPlannedBuilding(Building::BuildingType::Stables);
+			}
+		}
+		break;
+	case SDLK_ESCAPE:
+		ExitBuildModeForAllVillagers();
 		break;
 	}
+	ManageProduction(e);
 }
 
 void Game::ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e )
@@ -138,52 +163,21 @@ void Game::ProcessMouseDownEvent( const SDL_MouseButtonEvent& e )
 void Game::ProcessMouseUpEvent( const SDL_MouseButtonEvent& e )
 {
 	//std::cout << "MOUSEBUTTONUP event: ";
+	std::vector<std::unique_ptr<GameObject>> toSpawn;
+	bool buildingPlaced{ false };
+
 	switch (e.button)
 	{
 	case SDL_BUTTON_LEFT:
-		for (size_t i{}; i < m_pObjects.size(); ++i)
-		{
-			m_pObjects[i]->SetSelected(m_MousePos, selectionRect->GetRect());
-		}
-		selectionRect->RemoveRect();
-		selectedUnits.clear();
-		for (GameObject* object : m_pObjects)
-		{
-			Unit* unit = dynamic_cast<Unit*>(object);
-			if (unit != nullptr && unit->IsSelected())
-			{
-				selectedUnits.push_back(unit);
-			}
-			Building* building = dynamic_cast<Building*>(object);
-			if (building != nullptr && building->IsSelected())
-			{
-				selectedBuildings.push_back(building);
-			}
-		}
+		ProcessLeftClick(toSpawn, buildingPlaced);
 		break;
-	case SDL_BUTTON_RIGHT:
-		if (m_IsRightMousePressed)
-		{
-			m_IsRightMousePressed = false;
-			m_RightMouseEndPos = m_MousePos;
 
-			IssueDirectionalCommand(m_RightMouseStartPos, m_RightMouseEndPos);
-			m_RightCurrentPos = m_MousePos;
-		}
-		std::cout << "<--Printing Selection Results-->\n\n";
-		std::cout << selectedUnits.size() << " untis selected\n";
-		std::cout << selectedBuildings.size() << " buildings Selected\n";
-		std::cout << "\n";
+	case SDL_BUTTON_RIGHT:
+		ProcessRightClick();
 		break;
+
 	case SDL_BUTTON_MIDDLE:
-		for (GameObject* object : m_pObjects)
-		{
-			Unit* unit = dynamic_cast<Unit*>(object);
-			if (unit != nullptr)
-			{
-				unit->RemovePatrolPoints(m_MousePos);
-			}
-		}
+		ProcessMiddleClick();
 		break;
 	}
 }
@@ -229,10 +223,248 @@ void Game::IssueDirectionalCommand(const Point2f& start, const Point2f& end)
 
 	auto offsets = GenerateRotatedFormationOffsets(static_cast<int>(selectedUnits.size()), 60.f, facing);
 
-	for (size_t i = 0; i < selectedUnits.size(); ++i)
+	for (Unit* unit : selectedUnits)
 	{
-		selectedUnits[i]->SetFormationOffset(offsets[i]);
-		selectedUnits[i]->SetFacingTargetOffset(facing * 100.f);
-		selectedUnits[i]->CommandAI(start); // Shared origin
+		Villager* villager = dynamic_cast<Villager*>(unit);
+		unit->CommandAI(start); // Shared origin
+	}
+}
+
+void Game::ProcessLeftClick(std::vector<std::unique_ptr<GameObject>>& toSpawn, bool& buildingPlaced)
+{
+	PlaceBuildingIfPossible(toSpawn, buildingPlaced);
+	if (buildingPlaced) ExitBuildModeForAllVillagers();
+
+	SelectObjects();
+	UpdateSelectionLists();
+
+	for (auto& obj : toSpawn)
+	{
+		m_pObjects.push_back(std::move(obj));
+	}
+}
+
+void Game::ProcessRightClick()
+{
+	if (m_IsRightMousePressed)
+	{
+		m_IsRightMousePressed = false;
+		m_RightMouseEndPos = m_MousePos;
+		IssueDirectionalCommand(m_RightMouseStartPos, m_RightMouseEndPos);
+		m_RightCurrentPos = m_MousePos;
+	}
+
+	for (auto& object : m_pObjects)
+	{
+		if (Building* building = dynamic_cast<Building*>(object.get()); building && building->IsSelected())
+		{
+			building->SetRallyPoint(m_MousePos);
+		}
+	}
+	int villagerCounter{};
+	int infantryCounter{};
+	int rangedCounter{};
+	int cavalryCounter{};
+	int townCenterCounter{};
+	int barracksCounter{};
+	int archeryRangeCounter{};
+	int stablesCounter{};
+
+	std::cout << "<--Printing Selection Results-->\n\n";
+	std::cout << selectedUnits.size() << " units selected\n";
+	for (Unit* unit : selectedUnits)
+	{
+		Villager* villager = dynamic_cast<Villager*>(unit);
+		if (villager)
+		{
+			villagerCounter++;
+		}
+		Infantry* infantry = dynamic_cast<Infantry*>(unit);
+		if (infantry)
+		{
+			infantryCounter++;
+		}
+		Ranged* ranged = dynamic_cast<Ranged*>(unit);
+		if (ranged)
+		{
+			rangedCounter++;
+		}
+		Cavalry* cavalry = dynamic_cast<Cavalry*>(unit);
+		if (cavalry)
+		{
+			cavalryCounter++;
+		}
+	}
+	std::cout << "-- " << villagerCounter << " villagers selected\n";
+	std::cout << "-- " << infantryCounter << " infantry selected\n";
+	std::cout << "-- " << rangedCounter << " ranged selected\n";
+	std::cout << "-- " << cavalryCounter << " cavalry selected\n";
+	for (Building* building : selectedBuildings)
+	{
+		TownCenter* townCenter = dynamic_cast<TownCenter*>(building);
+		if (townCenter)
+		{
+			townCenterCounter++;
+		}
+		Barracks* barracks = dynamic_cast<Barracks*>(building);
+		if (barracks)
+		{
+			barracksCounter++;
+		}
+		ArcheryRange* archeryRange = dynamic_cast<ArcheryRange*>(building);
+		if (archeryRange)
+		{
+			archeryRangeCounter++;
+		}
+		Stables* stables = dynamic_cast<Stables*>(building);
+		if (stables)
+		{
+			stablesCounter++;
+		}
+	}
+	std::cout << selectedBuildings.size() << " buildings selected\n";
+	std::cout << "-- " << townCenterCounter << " towncenters selected\n";
+	std::cout << "-- " << barracksCounter << " barracks selected\n";
+	std::cout << "-- " << archeryRangeCounter << " archery range selected\n";
+	std::cout << "-- " << stablesCounter << " stables selected\n\n";
+}
+
+void Game::ProcessMiddleClick()
+{
+	for (const auto& object : m_pObjects)
+	{
+		if (Unit* unit = dynamic_cast<Unit*>(object.get()))
+		{
+			unit->RemovePatrolPoints(m_MousePos);
+		}
+	}
+}
+
+void Game::SelectObjects()
+{
+	bool unitSelected{ false };
+	for (auto& obj : m_pObjects)
+	{
+		Unit* unit = dynamic_cast<Unit*>(obj.get());
+		if (unit)
+		{
+			unit->SetSelected(m_MousePos, selectionRect->GetRect());
+			if (unit->IsSelected()) unitSelected = true;
+		}
+		else
+		{
+			obj->SetSelected(Point2f{}, Rectf{});
+		}
+	}
+	if (!unitSelected)
+	{
+		for (const auto& obj : m_pObjects)
+		{
+			Building* building = dynamic_cast<Building*>(obj.get());
+			if (building)
+			{
+				building->SetSelected(m_MousePos, selectionRect->GetRect());
+			}
+		}
+	}
+	selectionRect->RemoveRect();
+}
+
+void Game::UpdateSelectionLists()
+{
+	selectedUnits.clear();
+	selectedBuildings.clear();
+
+	for (const auto& object : m_pObjects)
+	{
+		if (Unit* unit = dynamic_cast<Unit*>(object.get()); unit && unit->IsSelected())
+			selectedUnits.insert(unit);
+
+		if (Building* building = dynamic_cast<Building*>(object.get()); building && building->IsSelected())
+			selectedBuildings.insert(building);
+	}
+}
+
+void Game::PlaceBuildingIfPossible(std::vector<std::unique_ptr<GameObject>>& toSpawn, bool& buildingPlaced)
+{
+	for (const auto& object : m_pObjects)
+	{
+		Villager* villager = dynamic_cast<Villager*>(object.get());
+		if (villager && villager->IsSelected() && villager->IsInBuildMode())
+		{
+			if (auto building = villager->PlaceBuilding(m_Resources))
+			{
+				toSpawn.push_back(std::move(building));
+			}
+			buildingPlaced = true;
+			break;
+		}
+	}
+}
+
+void Game::ExitBuildModeForAllVillagers()
+{
+	for (Unit* unit : selectedUnits)
+	{
+		Villager* villager = dynamic_cast<Villager*>(unit);
+		if (villager && villager->IsInBuildMode())
+		{
+			villager->ToggleBuildMode(false);
+		}
+	}
+}
+
+void Game::SpawnUnit(std::vector<std::unique_ptr<GameObject>>& toSpawn)
+{
+	for (const std::unique_ptr<GameObject>& object : m_pObjects)
+	{
+		if (!object) continue;
+
+		Building* building = dynamic_cast<Building*>(object.get());
+		if (building)
+		{
+			if (building->IsProductionFinished())
+			{
+				if (auto unit = building->CreateUnit(building->GetCenter(), building->GetBuildingType()))
+				{
+					toSpawn.push_back(std::move(unit));
+				}
+				building->ResetProduction();
+			}
+		}
+	}
+
+	for (auto& obj : toSpawn)
+	{
+		m_pObjects.push_back(std::move(obj));
+	}
+}
+
+void Game::TurnOnBuildModeForSelectedVillagers()
+{
+	for (const std::unique_ptr<GameObject>& object : m_pObjects)
+	{
+		Villager* villager = dynamic_cast<Villager*>(object.get());
+		if (villager && villager->IsSelected())
+		{
+			villager->ToggleBuildMode(true);
+		}
+	}
+}
+
+void Game::ManageProduction(const SDL_KeyboardEvent& e)
+{
+	switch (e.keysym.sym)
+	{
+	case SDLK_KP_PLUS:
+		for (auto& obj : m_pObjects)
+		{
+			Building* building = dynamic_cast<Building*>(obj.get());
+			if (building && building->IsSelected())
+			{
+				building->StartProduction(5);
+			}
+		}
+		break;
 	}
 }

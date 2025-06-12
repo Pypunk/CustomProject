@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
-#include "Unit.h"
-#include "Buidling.h"
+#include <memory>
+#include <set>
 
 class Game final
 {
@@ -26,16 +26,19 @@ public:
 private:
 	// DATA MEMBERS
 	const Window m_Window;
-	static const int m_AmountOfObjects{6};
-	std::vector<GameObject*> m_pObjects;
-	std::vector<Unit*> selectedUnits;
-	std::vector<Building*> selectedBuildings;
+	static const int m_AmountOfObjects{2};
+	std::vector<std::unique_ptr<class GameObject>> m_pObjects;
+	std::set<class Unit*> selectedUnits;
+	std::set<class Building*> selectedBuildings;
 	Point2f m_MousePos;
 	class SelectionRect* selectionRect;
 	bool m_IsRightMousePressed;
 	Point2f m_RightMouseStartPos;
 	Point2f m_RightMouseEndPos;
 	Point2f m_RightCurrentPos;
+
+	//RESOURCES
+	ResourceCost m_Resources;
 	// FUNCTIONS
 	void Initialize( );
 	void Cleanup( );
@@ -43,4 +46,15 @@ private:
 	std::vector<Point2f> GenerateRotatedFormationOffsets(int unitCount, float spacing, const Vector2f& facing);
 	void IssueDirectionalCommand(const Point2f& start, const Point2f& end);
 
+	void ProcessLeftClick(std::vector<std::unique_ptr<GameObject>>& toSpawn, bool& buildingPlaced);
+	void ProcessRightClick();
+	void ProcessMiddleClick();
+	void SelectObjects();
+	void UpdateSelectionLists();
+	void PlaceBuildingIfPossible(std::vector<std::unique_ptr<GameObject>>& toSpawn, bool& buildingPlaced);
+	void ExitBuildModeForAllVillagers();
+	void SpawnUnit(std::vector<std::unique_ptr<GameObject>>& toSpawn);
+	void TurnOnBuildModeForSelectedVillagers();
+
+	void ManageProduction(const SDL_KeyboardEvent& e);
 };
